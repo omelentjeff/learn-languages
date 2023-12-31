@@ -3,9 +3,10 @@ const config = require("../config");
 const pool = mysql.createPool(config);
 
 module.exports = {
-  findAll: () => {
+  findAll: (language) => {
     return new Promise((resolve, reject) => {
-      pool.query(`SELECT * FROM english`, (err, words) => {
+      const tableName = `${language}`;
+      pool.query(`SELECT * FROM ${tableName}`, (err, words) => {
         if (err) {
           reject(err);
         }
@@ -14,9 +15,10 @@ module.exports = {
     });
   },
 
-  save: (query) => {
-    const sql = "INSERT INTO english (english, finnish) VALUES (?, ?)";
-    const values = [query.english, query.finnish];
+  save: (language, query) => {
+    const tableName = `${language}`;
+    const sql = `INSERT INTO ${tableName} (${language}, finnish) VALUES (?, ?)`;
+    const values = Object.values(query);
 
     return new Promise((resolve, reject) => {
       pool.query(sql, values, (err, result) => {
