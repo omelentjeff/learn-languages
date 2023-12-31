@@ -13,4 +13,19 @@ module.exports = {
       });
     });
   },
+
+  save: (query) => {
+    const sql = "INSERT INTO english (english, finnish) VALUES (?, ?)";
+    const values = [query.english, query.finnish];
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve("Added a word pair");
+        }
+      });
+    });
+  },
 };
