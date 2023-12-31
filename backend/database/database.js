@@ -45,7 +45,6 @@ module.exports = {
           reject(`ID (${id}) not found.`);
         } else {
           resolve(result);
-          console.log("okei");
         }
       });
     });
