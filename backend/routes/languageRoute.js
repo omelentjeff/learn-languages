@@ -1,4 +1,5 @@
 const database = require("../database/database");
+const { validateResult } = require("../utils/validation");
 const express = require("express");
 const languageRouter = express.Router();
 
@@ -17,16 +18,6 @@ languageRouter.post("/:language", async (req, res) => {
     res.status(500).json({ msg: err });
   }
 });
-
-const validateResult = (query, result) => {
-  const userWord = Object.values(query)[0].toLowerCase();
-  const correctWord = Object.values(result)[0].finnish.toLowerCase();
-  if (userWord === correctWord) {
-    return true;
-  } else {
-    return false;
-  }
-};
 
 languageRouter.post("/:language/validate/:myId([0-9]+)", async (req, res) => {
   try {
