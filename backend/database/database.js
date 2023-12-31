@@ -6,11 +6,11 @@ module.exports = {
   findAll: (language) => {
     return new Promise((resolve, reject) => {
       const tableName = `${language}`;
-      pool.query(`SELECT * FROM ${tableName}`, (err, words) => {
+      pool.query(`SELECT * FROM ${tableName}`, (err, result) => {
         if (err) {
           reject(err);
         }
-        resolve(words);
+        resolve(result);
       });
     });
   },
@@ -26,6 +26,26 @@ module.exports = {
           reject(err);
         } else {
           resolve("Added a word pair");
+        }
+      });
+    });
+  },
+
+  findById: (language, id) => {
+    const tableName = `${language}`;
+    const sql = `SELECT * FROM ${tableName} WHERE id = ?`;
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, [id], (err, result) => {
+        if (err) {
+          reject("noup");
+        }
+
+        if (result.length === 0) {
+          reject(`ID (${id}) not found.`);
+        } else {
+          resolve(result);
+          console.log("okei");
         }
       });
     });
