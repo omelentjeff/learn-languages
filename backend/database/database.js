@@ -38,7 +38,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       pool.query(sql, [id], (err, result) => {
         if (err) {
-          reject("noup");
+          reject(err);
         }
 
         if (result.length === 0) {
