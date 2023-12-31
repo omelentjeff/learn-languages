@@ -15,11 +15,6 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use("/api/languages", languageRouter);
 
-console.log("HOST:", process.env.HOST);
-console.log("USERNAME:", process.env.USERNAME);
-console.log("PASSWORD:", process.env.PASSWORD);
-console.log("DATABASE:", process.env.DATABASE);
-
 // app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 const server = app
