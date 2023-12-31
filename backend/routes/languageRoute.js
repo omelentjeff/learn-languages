@@ -2,14 +2,16 @@ const database = require("../database/database");
 const express = require("express");
 const languageRouter = express.Router();
 
-languageRouter.get("/", async (req, res) => {
-  const words = await database.findAll();
+languageRouter.get("/:language", async (req, res) => {
+  const language = req.params.language;
+  const words = await database.findAll(language);
   res.json(words);
 });
 
-languageRouter.post("/", async (req, res) => {
+languageRouter.post("/:language", async (req, res) => {
   try {
-    const newWord = await database.save(req.body);
+    const language = req.params.language;
+    const newWord = await database.save(language, req.body); // Pass the language parameter
     res.status(201).json(newWord);
   } catch (err) {
     res.status(500).json({ msg: err });
