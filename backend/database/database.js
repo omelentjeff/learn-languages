@@ -5,7 +5,7 @@ const pool = mysql.createPool(config);
 module.exports = {
   findAll: () => {
     return new Promise((resolve, reject) => {
-      pool.query(`select * FROM english`, (err, words) => {
+      pool.query(`SELECT * FROM english`, (err, words) => {
         if (err) {
           reject(err);
         }

@@ -1,5 +1,5 @@
 const express = require("express");
-// const locationsRouter = require("./routes/locations");
+const languageRouter = require("./routes/languageRoute");
 const port = 8080;
 const app = express();
 const path = require("path");
@@ -13,7 +13,13 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-// app.use("/api/locations", locationsRouter);
+app.use("/api/languages", languageRouter);
+
+console.log("HOST:", process.env.HOST);
+console.log("USERNAME:", process.env.USERNAME);
+console.log("PASSWORD:", process.env.PASSWORD);
+console.log("DATABASE:", process.env.DATABASE);
+
 // app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 const server = app
