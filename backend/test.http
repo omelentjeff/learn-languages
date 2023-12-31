@@ -15,4 +15,19 @@ Content-Type: application/json
 POST http://localhost:8080/api/languages/swedish
 Content-Type: application/json
 
-{ "swedish": "katt", "finnish": "kissa" }
+{ "swedish": "hund", "finnish": "koira" }
+
+
+// VALIDATION REQUESTS
+
+###
+POST http://localhost:8080/api/languages/english/validate/1
+Content-Type: application/json
+
+{ "finnish": "KOIRA" }
+
+###
+POST http://localhost:8080/api/languages/swedish/validate/1
+Content-Type: application/json
+
+{ "finnish": "koira" }
