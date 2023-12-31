@@ -1,8 +1,18 @@
 ###
-get http://localhost:8080/api/languages
+get http://localhost:8080/api/languages/english
 
 ###
-post http://localhost:8080/api/languages
-content-type: application/json
+get http://localhost:8080/api/languages/swedish
+
+
+###
+POST http://localhost:8080/api/languages/english
+Content-Type: application/json
 
 { "english": "cat", "finnish": "kissa" }
+
+###
+POST http://localhost:8080/api/languages/swedish
+Content-Type: application/json
+
+{ "swedish": "katt", "finnish": "kissa" }
