@@ -73,4 +73,17 @@ module.exports = {
       });
     });
   },
+
+  findAllUsers: () => {
+    const sql = "SELECT * FROM users";
+    return new Promise((resolve, reject) => {
+      pool.query(sql, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  },
 };
