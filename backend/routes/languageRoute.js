@@ -3,20 +3,11 @@ const { validateResult } = require("../utils/validation");
 const express = require("express");
 const languageRouter = express.Router();
 
-languageRouter.get("/:language", async (req, res) => {
+languageRouter.get("/", async (req, res) => {
   const language = req.params.language;
   const words = await database.findAll(language);
   res.json(words);
 });
-
-// Example usage for creating a word with a category
-// db.createWord("english", "blue", "sininen", "colors")
-//   .then((result) => {
-//     console.log(result);
-//   })
-//   .catch((error) => {
-//     console.error("Error creating word:", error);
-//   });
 
 languageRouter.post("/:language", async (req, res) => {
   try {
