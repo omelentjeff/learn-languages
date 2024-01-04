@@ -57,7 +57,7 @@ module.exports = {
 
   findById: (language, id) => {
     const tableName = `${language}`;
-    const sql = `SELECT * FROM ${tableName} WHERE id = ?`;
+    const sql = `SELECT * FROM words WHERE word_id = ${id} AND language_id = (SELECT language_id FROM languages WHERE language_name = '${language}')`;
 
     return new Promise((resolve, reject) => {
       pool.query(sql, [id], (err, result) => {
