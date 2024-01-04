@@ -14,26 +14,28 @@ userRouter.get("/", async (req, res) => {
 
 userRouter.post("/", async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const existingUser = await database.findUserByUsername(req.body.username);
 
-    // Attempt to save the user
-    try {
+    if (existingUser !== null) {
+      return res.status(400).json("Username already in use!");
+    } else {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const newUser = await database.saveUser(
         req.body.username,
         hashedPassword
       );
       res.status(201).json(newUser);
-    } catch (error) {
-      if (error.message === "Username is already taken") {
-        res.status(400).json({
-          msg: "Username is already taken. Please choose a different one.",
-        });
-      } else {
-        res.status(500).json({ msg: "Internal server error" });
-      }
     }
   } catch (err) {
-    res.status(500).json({ msg: err.message || "Internal server error" });
+    res.status(500).json({ msg: "Internal server error" });
+  }
+});
+
+userRouter.post("/login", async (req, res) => {
+  try {
+    // Add logic for user login
+  } catch (err) {
+    res.status(500).json({ msg: err });
   }
 });
 
