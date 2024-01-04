@@ -6,7 +6,7 @@ module.exports = {
   findAll: (language) => {
     return new Promise((resolve, reject) => {
       const tableName = `${language}`;
-      pool.query(`SELECT * FROM ${tableName}`, (err, result) => {
+      pool.query(`SELECT * FROM words`, (err, result) => {
         if (err) {
           reject(err);
         }
