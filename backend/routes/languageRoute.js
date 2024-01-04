@@ -9,10 +9,21 @@ languageRouter.get("/:language", async (req, res) => {
   res.json(words);
 });
 
+// Example usage for creating a word with a category
+// db.createWord("english", "blue", "sininen", "colors")
+//   .then((result) => {
+//     console.log(result);
+//   })
+//   .catch((error) => {
+//     console.error("Error creating word:", error);
+//   });
+
 languageRouter.post("/:language", async (req, res) => {
   try {
     const language = req.params.language;
-    const newWord = await database.save(language, req.body); // Pass the language parameter
+    const category = req.query.category; // Use req.params.category for path parameters
+    console.log(category);
+    const newWord = await database.save(language, category, req.body);
     res.status(201).json(newWord);
   } catch (err) {
     res.status(500).json({ msg: err });
