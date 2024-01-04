@@ -1,3 +1,4 @@
+const { hash } = require("bcrypt");
 const mysql = require("mysql");
 const config = require("../config");
 const pool = mysql.createPool(config);
@@ -82,6 +83,42 @@ module.exports = {
           reject(err);
         } else {
           resolve(result);
+        }
+      });
+    });
+  },
+
+  saveUser: async (username, hashedPassword) => {
+    const existingUser = await module.exports.findUserByUsername(username);
+
+    if (existingUser) {
+      throw new Error("Username is already taken");
+    }
+
+    const sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)";
+    const values = [username, hashedPassword];
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve("User added successfully");
+        }
+      });
+    });
+  },
+
+  findUserByUsername: (username) => {
+    const sql = "SELECT * FROM users WHERE username = ?";
+    const values = [username];
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result.length > 0 ? result[0] : null);
         }
       });
     });
