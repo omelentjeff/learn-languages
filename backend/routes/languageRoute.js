@@ -12,7 +12,7 @@ languageRouter.get("/", async (req, res) => {
 languageRouter.post("/:language", async (req, res) => {
   try {
     const language = req.params.language;
-    const category = req.query.category; // Use req.params.category for path parameters
+    const category = req.query.category;
     console.log(category);
     const newWord = await database.save(language, category, req.body);
     res.status(201).json(newWord);
@@ -21,14 +21,14 @@ languageRouter.post("/:language", async (req, res) => {
   }
 });
 
-languageRouter.post("/:language/validate/:myId([0-9]+)", async (req, res) => {
+languageRouter.post("/validate/:myId([0-9]+)", async (req, res) => {
   try {
-    const language = req.params.language;
+    const language = req.body.language;
     const id = parseInt(req.params.myId);
 
     const result = await database.findById(language, id);
 
-    const isValid = validateResult(req.body, result);
+    const isValid = validateResult(req.body.finnish_word, result);
 
     if (isValid) {
       res.status(200).json("Verification successful");
