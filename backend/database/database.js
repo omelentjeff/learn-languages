@@ -107,7 +107,8 @@ module.exports = {
   // ...
 
   findUserByUsername: (username) => {
-    const sql = "SELECT * FROM users WHERE username = ?";
+    const sql =
+      "SELECT user_id, username, password_hash FROM users WHERE username = ?";
     const values = [username];
 
     return new Promise((resolve, reject) => {
