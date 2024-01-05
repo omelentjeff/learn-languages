@@ -33,7 +33,23 @@ userRouter.post("/", async (req, res) => {
 
 userRouter.post("/login", async (req, res) => {
   try {
-    // Add logic for user login
+    const foundUser = await database.findUserByUsername(req.body.username);
+
+    if (foundUser === null) {
+      return res.status(400).json(`User (${req.body.username}) not found`);
+    } else {
+      const isPasswordMatch = await bcrypt.compare(
+        req.body.password,
+        foundUser.password_hash
+      );
+
+      if (isPasswordMatch) {
+        const { user_id, username } = foundUser;
+        res.status(200).json({ user_id, username });
+      } else {
+        res.status(401).json("Incorrect password");
+      }
+    }
   } catch (err) {
     res.status(500).json({ msg: err });
   }
