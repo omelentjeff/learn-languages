@@ -109,9 +109,9 @@ export default function SignUp() {
                 required
                 fullWidth
                 name="password"
-                label="Repeat Password"
+                label="Verify Password"
                 type={showPassword ? "text" : "password"}
-                id="repeatPassword"
+                id="verifyPassword"
                 autoComplete="new-password"
                 InputProps={{
                   endAdornment: (
