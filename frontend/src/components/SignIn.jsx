@@ -18,6 +18,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Copyright(props) {
   return (
@@ -41,16 +42,39 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const user = {
       username: data.get("username"),
       password: data.get("password"),
-    });
+    };
 
-    // Auth logic
-    navigate("/home");
+    try {
+      const response = await login(user);
+
+      if (response.status === 200) {
+        navigate("/home");
+      } else {
+        console.log("FAILLLLL");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  };
+
+  const login = async (user) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/users/login`,
+        user
+      );
+      console.log(response.data);
+      return response;
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      throw error;
+    }
   };
 
   return (
