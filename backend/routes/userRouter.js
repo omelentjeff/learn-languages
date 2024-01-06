@@ -12,7 +12,7 @@ userRouter.get("/", async (req, res) => {
   }
 });
 
-userRouter.post("/", async (req, res) => {
+userRouter.post("/signup", async (req, res) => {
   try {
     const existingUser = await database.findUserByUsername(req.body.username);
 
