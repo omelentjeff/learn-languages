@@ -11,12 +11,12 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 
 function Copyright(props) {
@@ -40,8 +40,14 @@ function Copyright(props) {
 export default function SignUp() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showVerifyPassword, setShowVerifyPassword] = React.useState(false);
-  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    verifyPassword: "",
+    isAdmin: false,
+  });
   const navigate = useNavigate();
 
   const checkPasswordMatch = (password1, password2) => {
@@ -51,13 +57,10 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setErrorMessage("");
-    setLoading(true);
-
     const data = new FormData(event.currentTarget);
 
     if (!data.get("username")) {
       setErrorMessage("Please provide a username.");
-      setLoading(false);
       return;
     }
 
@@ -70,21 +73,17 @@ export default function SignUp() {
       const user = {
         username: data.get("username"),
         password: data.get("password"),
-        is_admin: isAdmin,
+        is_admin: formData.isAdmin,
       };
 
       try {
+        setLoading(true);
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/api/users/signup`,
           user
         );
 
         if (response.status === 201) {
-          // Simulating a signup request with a delay
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          // Replace the above line with your actual signup API call
-
-          // Redirect to home on successful signup
           navigate("/home");
         } else {
           setErrorMessage("Signup failed. Please check your credentials.");
@@ -94,16 +93,13 @@ export default function SignUp() {
         if (error.response) {
           console.error("Server response:", error.response);
           if (error.response.data) {
-            // Check if the server returned an error message
             setErrorMessage(error.response.data);
           } else {
-            // Unexpected error with a response but no message
             setErrorMessage(
               "An unexpected error occurred. Please try again later."
             );
           }
         } else {
-          // Unexpected error without a response
           setErrorMessage(
             "An unexpected error occurred. Please try again later."
           );
@@ -113,8 +109,14 @@ export default function SignUp() {
       }
     } else {
       setErrorMessage("Passwords do not match.");
-      setLoading(false);
     }
+  };
+
+  const handleChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
   };
 
   return (
@@ -149,6 +151,8 @@ export default function SignUp() {
                 label="Username"
                 name="username"
                 autoComplete="username"
+                value={formData.username}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -172,6 +176,8 @@ export default function SignUp() {
                     </InputAdornment>
                   ),
                 }}
+                value={formData.password}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -201,11 +207,21 @@ export default function SignUp() {
                     </InputAdornment>
                   ),
                 }}
+                value={formData.verifyPassword}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
+                control={
+                  <Checkbox
+                    value={formData.isAdmin}
+                    onChange={() =>
+                      setFormData({ ...formData, isAdmin: !formData.isAdmin })
+                    }
+                    color="primary"
+                  />
+                }
                 label="I'm a teacher."
               />
             </Grid>
@@ -217,11 +233,7 @@ export default function SignUp() {
             sx={{ mt: 3, mb: 2 }}
             disabled={loading}
           >
-            {loading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              "Sign Up"
-            )}
+            {loading ? "Signing up..." : "Sign Up"}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
