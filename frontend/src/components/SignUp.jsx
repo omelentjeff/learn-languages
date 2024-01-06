@@ -39,6 +39,7 @@ function Copyright(props) {
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [showVerifyPassword, setShowVerifyPassword] = React.useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
@@ -160,17 +161,23 @@ export default function SignUp() {
                 fullWidth
                 name="verifyPassword"
                 label="Verify Password"
-                type={showPassword ? "text" : "password"}
+                type={showVerifyPassword ? "text" : "password"}
                 id="verifyPassword"
                 autoComplete="new-password"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
+                        onClick={() =>
+                          setShowVerifyPassword(!showVerifyPassword)
+                        }
                         edge="end"
                       >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showVerifyPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   ),
