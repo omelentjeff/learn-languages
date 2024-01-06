@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -17,6 +17,7 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import axios from "axios";
 
 function Copyright(props) {
   return (
@@ -38,18 +39,62 @@ function Copyright(props) {
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const checkPasswordMatch = (password1, password2) => {
+    return password1 === password2;
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      username: data.get("username"),
-      password: data.get("password"),
-    });
 
-    // Auth logic
-    navigate("/home");
+    const password = checkPasswordMatch(
+      data.get("password"),
+      data.get("verifyPassword")
+    );
+
+    if (password) {
+      const user = {
+        username: data.get("username"),
+        password: data.get("password"),
+      };
+
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/users/signup`,
+          user
+        );
+
+        if (response.status === 201) {
+          navigate("/home");
+        } else {
+          setErrorMessage("Signup failed. Please check your credentials.");
+        }
+      } catch (error) {
+        console.error("Error during signup:", error);
+        if (error.response) {
+          console.error("Server response:", error.response);
+          if (error.response.data) {
+            // Check if the server returned an error message
+            setErrorMessage(error.response.data);
+          } else {
+            // Unexpected error with a response but no message
+            setErrorMessage(
+              "An unexpected error occurred. Please try again later."
+            );
+          }
+        } else {
+          // Unexpected error without a response
+          setErrorMessage(
+            "An unexpected error occurred. Please try again later."
+          );
+        }
+      }
+    } else {
+      setErrorMessage("Passwords do not match.");
+    }
   };
 
   return (
@@ -63,6 +108,11 @@ export default function SignUp() {
           alignItems: "center",
         }}
       >
+        {errorMessage && (
+          <Typography color="error" variant="body2" mb={2} align="center">
+            {errorMessage}
+          </Typography>
+        )}
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
@@ -108,7 +158,7 @@ export default function SignUp() {
               <TextField
                 required
                 fullWidth
-                name="password"
+                name="verifyPassword"
                 label="Verify Password"
                 type={showPassword ? "text" : "password"}
                 id="verifyPassword"
