@@ -22,7 +22,8 @@ userRouter.post("/signup", async (req, res) => {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const newUser = await database.saveUser(
         req.body.username,
-        hashedPassword
+        hashedPassword,
+        req.body.is_admin || false // Set is_admin to true if the checkbox is checked
       );
       res.status(201).json(newUser);
     }
@@ -30,7 +31,6 @@ userRouter.post("/signup", async (req, res) => {
     res.status(500).json({ msg: "Internal server error" });
   }
 });
-
 userRouter.post("/login", async (req, res) => {
   try {
     const foundUser = await database.findUserByUsername(req.body.username);
