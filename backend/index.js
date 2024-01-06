@@ -4,6 +4,7 @@ const userRouter = require("./routes/userRouter");
 const port = 8080;
 const app = express();
 const path = require("path");
+const cors = require("cors");
 const mysql = require("mysql");
 const config = require("./config");
 const connection = mysql.createPool(config);
@@ -14,6 +15,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+app.use(cors());
 app.use("/api/languages", languageRouter);
 app.use("/api/users", userRouter);
 
