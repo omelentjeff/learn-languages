@@ -20,11 +20,16 @@ import axios from "axios";
 
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setErrorMessage(""); // Clear error message when submitting
     const data = new FormData(event.currentTarget);
     const user = {
       username: data.get("username"),
@@ -41,6 +46,11 @@ function SignIn() {
         navigate("/home");
       } else {
         setErrorMessage("Login failed. Please check your credentials.");
+        // Clear input fields on error
+        setFormData({
+          username: "",
+          password: "",
+        });
       }
     } catch (error) {
       console.error("Error during login:", error);
@@ -61,7 +71,20 @@ function SignIn() {
           "An unexpected error occurred. Please try again later."
         );
       }
+      // Clear input fields on error
+      setFormData({
+        username: "",
+        password: "",
+      });
     }
+  };
+
+  const handleChange = (event) => {
+    // Update form data as the user types
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
   };
 
   return (
@@ -75,18 +98,18 @@ function SignIn() {
           alignItems: "center",
         }}
       >
+        {errorMessage && (
+          <Typography color="error" variant="body2" mb={2} align="center">
+            {errorMessage}
+          </Typography>
+        )}
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        {errorMessage && (
-          <Typography color="error" variant="body2" gutterBottom>
-            {errorMessage}
-          </Typography>
-        )}
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <TextField
             margin="normal"
             required
@@ -95,7 +118,8 @@ function SignIn() {
             label="Username"
             name="username"
             autoComplete="username"
-            autoFocus
+            value={formData.username}
+            onChange={handleChange}
           />
           <TextField
             margin="normal"
@@ -106,6 +130,8 @@ function SignIn() {
             name="password"
             type={showPassword ? "text" : "password"}
             autoComplete="current-password"
+            value={formData.password}
+            onChange={handleChange}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
