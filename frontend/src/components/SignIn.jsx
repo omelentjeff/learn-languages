@@ -3,8 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -16,10 +14,12 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -29,53 +29,41 @@ function SignIn() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setErrorMessage(""); // Clear error message when submitting
+    setErrorMessage("");
+    setLoading(true);
+
     const data = new FormData(event.currentTarget);
-    const user = {
-      username: data.get("username"),
-      password: data.get("password"),
-    };
 
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/users/login`,
-        user
-      );
+    if (data.get("username") && data.get("password")) {
+      const user = {
+        username: data.get("username"),
+        password: data.get("password"),
+      };
 
-      if (response.status === 200) {
-        navigate("/home");
-      } else {
-        setErrorMessage("Login failed. Please check your credentials.");
-        // Clear input fields on error
-        setFormData({
-          username: "",
-          password: "",
-        });
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-      if (error.response) {
-        console.error("Server response:", error.response);
-        if (error.response.data) {
-          // Check if the server returned an error message
-          setErrorMessage(error.response.data);
-        } else {
-          // Unexpected error with a response but no message
-          setErrorMessage(
-            "An unexpected error occurred. Please try again later."
-          );
-        }
-      } else {
-        // Unexpected error without a response
-        setErrorMessage(
-          "An unexpected error occurred. Please try again later."
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/users/login`,
+          user
         );
+
+        if (response.status === 200) {
+          // Simulating a login request with a delay
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          // Replace the above line with your actual login API call
+
+          // Redirect to home on successful login
+          navigate("/home");
+        } else {
+          setErrorMessage("Login failed. Please check your credentials.");
+        }
+      } catch (error) {
+        setErrorMessage("Invalid username or password");
+      } finally {
+        setLoading(false);
       }
-      // Clear input fields on error
-      setFormData({
-        username: "",
-        password: "",
-      });
+    } else {
+      setErrorMessage("Please provide both username and password");
+      setLoading(false);
     }
   };
 
@@ -145,27 +133,23 @@ function SignIn() {
               ),
             }}
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            disabled={loading}
           >
-            Sign In
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Sign In"
+            )}
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
+          <Grid container justifyContent="flex-end">
             <Grid item>
               <Link component={RouterLink} to="/signup" variant="body2">
-                {"Don't have an account? Sign Up"}
+                Don't have an account? Sign Up
               </Link>
             </Grid>
           </Grid>
