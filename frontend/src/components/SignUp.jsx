@@ -51,50 +51,54 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    const password = checkPasswordMatch(
-      data.get("password"),
-      data.get("verifyPassword")
-    );
+    const username = data.get("username");
+    const password = data.get("password");
+    const verifyPassword = data.get("verifyPassword");
 
-    if (password) {
-      const user = {
-        username: data.get("username"),
-        password: data.get("password"),
-      };
+    if (!username) {
+      setErrorMessage("Please provide a username.");
+      return;
+    }
 
-      try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/users/signup`,
-          user
-        );
+    const passwordMatch = checkPasswordMatch(password, verifyPassword);
 
-        if (response.status === 201) {
-          navigate("/home");
+    if (!passwordMatch) {
+      setErrorMessage("Passwords do not match.");
+      return;
+    }
+
+    const user = {
+      username: username,
+      password: password,
+    };
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/users/signup`,
+        user
+      );
+
+      if (response.status === 201) {
+        navigate("/home");
+      } else {
+        setErrorMessage("Signup failed. Please check your credentials.");
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      if (error.response) {
+        console.error("Server response:", error.response);
+        if (error.response.data) {
+          setErrorMessage(error.response.data);
         } else {
-          setErrorMessage("Signup failed. Please check your credentials.");
-        }
-      } catch (error) {
-        console.error("Error during signup:", error);
-        if (error.response) {
-          console.error("Server response:", error.response);
-          if (error.response.data) {
-            // Check if the server returned an error message
-            setErrorMessage(error.response.data);
-          } else {
-            // Unexpected error with a response but no message
-            setErrorMessage(
-              "An unexpected error occurred. Please try again later."
-            );
-          }
-        } else {
-          // Unexpected error without a response
           setErrorMessage(
             "An unexpected error occurred. Please try again later."
           );
         }
+      } else {
+        setErrorMessage(
+          "An unexpected error occurred. Please try again later."
+        );
       }
-    } else {
-      setErrorMessage("Passwords do not match.");
     }
   };
 
