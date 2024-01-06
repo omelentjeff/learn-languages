@@ -11,12 +11,12 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Link as RouterLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 
 function Copyright(props) {
@@ -40,6 +40,7 @@ function Copyright(props) {
 export default function SignUp() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showVerifyPassword, setShowVerifyPassword] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
@@ -49,56 +50,70 @@ export default function SignUp() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setErrorMessage("");
+    setLoading(true);
+
     const data = new FormData(event.currentTarget);
 
-    const username = data.get("username");
-    const password = data.get("password");
-    const verifyPassword = data.get("verifyPassword");
-
-    if (!username) {
+    if (!data.get("username")) {
       setErrorMessage("Please provide a username.");
+      setLoading(false);
       return;
     }
 
-    const passwordMatch = checkPasswordMatch(password, verifyPassword);
+    const password = checkPasswordMatch(
+      data.get("password"),
+      data.get("verifyPassword")
+    );
 
-    if (!passwordMatch) {
-      setErrorMessage("Passwords do not match.");
-      return;
-    }
+    if (password && data.get("username")) {
+      const user = {
+        username: data.get("username"),
+        password: data.get("password"),
+        is_admin: isAdmin,
+      };
 
-    const user = {
-      username: username,
-      password: password,
-    };
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/users/signup`,
+          user
+        );
 
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/users/signup`,
-        user
-      );
+        if (response.status === 201) {
+          // Simulating a signup request with a delay
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          // Replace the above line with your actual signup API call
 
-      if (response.status === 201) {
-        navigate("/home");
-      } else {
-        setErrorMessage("Signup failed. Please check your credentials.");
-      }
-    } catch (error) {
-      console.error("Error during signup:", error);
-      if (error.response) {
-        console.error("Server response:", error.response);
-        if (error.response.data) {
-          setErrorMessage(error.response.data);
+          // Redirect to home on successful signup
+          navigate("/home");
         } else {
+          setErrorMessage("Signup failed. Please check your credentials.");
+        }
+      } catch (error) {
+        console.error("Error during signup:", error);
+        if (error.response) {
+          console.error("Server response:", error.response);
+          if (error.response.data) {
+            // Check if the server returned an error message
+            setErrorMessage(error.response.data);
+          } else {
+            // Unexpected error with a response but no message
+            setErrorMessage(
+              "An unexpected error occurred. Please try again later."
+            );
+          }
+        } else {
+          // Unexpected error without a response
           setErrorMessage(
             "An unexpected error occurred. Please try again later."
           );
         }
-      } else {
-        setErrorMessage(
-          "An unexpected error occurred. Please try again later."
-        );
+      } finally {
+        setLoading(false);
       }
+    } else {
+      setErrorMessage("Passwords do not match.");
+      setLoading(false);
     }
   };
 
@@ -200,8 +215,13 @@ export default function SignUp() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            disabled={loading}
           >
-            Sign Up
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Sign Up"
+            )}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
