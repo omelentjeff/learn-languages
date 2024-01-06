@@ -1,5 +1,4 @@
-import * as React from "react";
-import { useState } from "react"; // Add this line
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,34 +11,16 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Otto Melentjeff
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-export default function SignIn() {
+function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -51,29 +32,35 @@ export default function SignIn() {
     };
 
     try {
-      const response = await login(user);
-
-      if (response.status === 200) {
-        navigate("/home");
-      } else {
-        console.log("FAILLLLL");
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-    }
-  };
-
-  const login = async (user) => {
-    try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/users/login`,
         user
       );
-      console.log(response.data);
-      return response;
+
+      if (response.status === 200) {
+        navigate("/home");
+      } else {
+        setErrorMessage("Login failed. Please check your credentials.");
+      }
     } catch (error) {
-      console.error("Error fetching user:", error);
-      throw error;
+      console.error("Error during login:", error);
+      if (error.response) {
+        console.error("Server response:", error.response);
+        if (error.response.data) {
+          // Check if the server returned an error message
+          setErrorMessage(error.response.data);
+        } else {
+          // Unexpected error with a response but no message
+          setErrorMessage(
+            "An unexpected error occurred. Please try again later."
+          );
+        }
+      } else {
+        // Unexpected error without a response
+        setErrorMessage(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
     }
   };
 
@@ -94,6 +81,11 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+        {errorMessage && (
+          <Typography color="error" variant="body2" gutterBottom>
+            {errorMessage}
+          </Typography>
+        )}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -153,7 +145,8 @@ export default function SignIn() {
           </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   );
 }
+
+export default SignIn;
