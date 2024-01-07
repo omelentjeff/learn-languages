@@ -5,15 +5,29 @@ const config = require("../config");
 const pool = mysql.createPool(config);
 
 module.exports = {
-  findAll: (language) => {
+  findAll: () => {
     return new Promise((resolve, reject) => {
-      const tableName = `${language}`;
       pool.query(`SELECT * FROM words`, (err, result) => {
         if (err) {
           reject(err);
         }
         resolve(result);
       });
+    });
+  },
+
+  findAllWordsByLanguage: (language) => {
+    return new Promise((resolve, reject) => {
+      const tableName = `${language}`;
+      pool.query(
+        `SELECT * FROM words WHERE language_id = (SELECT language_id FROM languages WHERE language_name = '${language}')`,
+        (err, result) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(result);
+        }
+      );
     });
   },
 
