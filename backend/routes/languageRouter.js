@@ -13,4 +13,14 @@ languageRouter.get("/", async (req, res) => {
   }
 });
 
+languageRouter.post("/", async (req, res) => {
+  try {
+    const language = req.body.language;
+    const newLanguage = await database.saveLanguage(language);
+    res.status(201).json(newLanguage);
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
+
 module.exports = languageRouter;
