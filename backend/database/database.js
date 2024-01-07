@@ -151,4 +151,20 @@ module.exports = {
       });
     });
   },
+
+  getWordCountForLanguage: (language) => {
+    const sql =
+      "SELECT COUNT(word_id) AS wordCount FROM words WHERE language_id = (SELECT language_id FROM languages WHERE language_name = ?)";
+    const values = [language];
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  },
 };
