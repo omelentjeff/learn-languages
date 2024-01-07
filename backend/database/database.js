@@ -152,10 +152,17 @@ module.exports = {
     });
   },
 
-  getWordCountForLanguage: (language) => {
-    const sql =
-      "SELECT COUNT(word_id) AS wordCount FROM words WHERE language_id = (SELECT language_id FROM languages WHERE language_name = ?)";
-    const values = [language];
+  getAllLanguagesWithWordCount: () => {
+    const sql = `
+      SELECT 
+        languages.language_id,
+        languages.language_name,
+        COUNT(words.word_id) AS wordCount
+      FROM languages
+      LEFT JOIN words ON languages.language_id = words.language_id
+      GROUP BY languages.language_id, languages.language_name
+    `;
+    const values = [];
 
     return new Promise((resolve, reject) => {
       pool.query(sql, values, (err, result) => {
