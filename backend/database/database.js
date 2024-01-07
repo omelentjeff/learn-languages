@@ -89,10 +89,10 @@ module.exports = {
     });
   },
 
-  saveUser: (username, hashedPassword, isAdmin) => {
+  saveUser: (username, hashedPassword, role) => {
     const sql =
-      "INSERT INTO users (username, password_hash, is_admin) VALUES (?, ?, ?)";
-    const values = [username, hashedPassword, isAdmin];
+      "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)";
+    const values = [username, hashedPassword, role];
 
     return new Promise((resolve, reject) => {
       pool.query(sql, values, (err, result) => {
