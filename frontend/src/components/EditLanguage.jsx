@@ -63,7 +63,7 @@ export default function EditLanguage() {
     },
     {
       field: "delete",
-      headerName: "Actions",
+      headerName: "Delete",
       width: 100,
       renderCell: (params) => (
         <IconButton onClick={() => handleDeleteRow(params.row.word_id)}>
