@@ -46,7 +46,7 @@ export default function SignUp() {
     username: "",
     password: "",
     verifyPassword: "",
-    isAdmin: false,
+    role: "student",
   });
   const navigate = useNavigate();
 
@@ -73,7 +73,7 @@ export default function SignUp() {
       const user = {
         username: data.get("username"),
         password: data.get("password"),
-        is_admin: formData.isAdmin,
+        role: formData.role,
       };
 
       try {
@@ -215,9 +215,13 @@ export default function SignUp() {
               <FormControlLabel
                 control={
                   <Checkbox
-                    value={formData.isAdmin}
+                    checked={formData.role === "teacher"}
                     onChange={() =>
-                      setFormData({ ...formData, isAdmin: !formData.isAdmin })
+                      setFormData({
+                        ...formData,
+                        role:
+                          formData.role === "teacher" ? "student" : "teacher",
+                      })
                     }
                     color="primary"
                   />
