@@ -25,7 +25,7 @@ export default function BasicCard({ languageId, languageName, wordCount }) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Link to={`/edit/${languageId}`}>
+        <Link to={`/edit/${languageName}`}>
           <Button size="small">Edit</Button>
         </Link>
       </CardActions>
