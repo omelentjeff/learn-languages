@@ -19,7 +19,7 @@ module.exports = {
   findAllWordsByLanguage: (language) => {
     return new Promise((resolve, reject) => {
       pool.query(
-        "SELECT * FROM words WHERE language_id = (SELECT language_id FROM languages WHERE language_name = ?)",
+        "SELECT words.*, categories.category_name FROM words JOIN categories ON words.category_id = categories.category_id WHERE words.language_id = (SELECT language_id FROM languages WHERE language_name = ?)",
         [language],
         (err, result) => {
           if (err) {
@@ -56,7 +56,7 @@ module.exports = {
       category,
       query.foreign_word,
       query.finnish_word,
-      category, // Ensure that the correct value is provided for the category
+      category,
       language,
     ];
 
@@ -66,6 +66,21 @@ module.exports = {
           reject(err);
         } else {
           resolve("Successfully created a word pair");
+        }
+      });
+    });
+  },
+
+  updateWord: (field, value, wordId) => {
+    const sql = `UPDATE words SET ${field} = ? WHERE word_id = ?`;
+    const values = [field, wordId];
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
         }
       });
     });
