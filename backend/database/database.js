@@ -174,4 +174,32 @@ module.exports = {
       });
     });
   },
+
+  saveLanguage: (language) => {
+    const sql = "INSERT INTO languages (language_name) VALUES (?)";
+    const values = [language];
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          const insertedLanguageId = result.insertId;
+
+          const selectSql = "SELECT * FROM languages WHERE language_id = ?";
+          pool.query(
+            selectSql,
+            [insertedLanguageId],
+            (selectErr, selectResult) => {
+              if (selectErr) {
+                reject(selectErr);
+              } else {
+                resolve(selectResult[0]);
+              }
+            }
+          );
+        }
+      });
+    });
+  },
 };
