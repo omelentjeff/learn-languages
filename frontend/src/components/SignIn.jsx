@@ -49,15 +49,24 @@ function SignIn() {
         if (response.status === 200) {
           // Simulating a login request with a delay
           await new Promise((resolve) => setTimeout(resolve, 1000));
-          // Replace the above line with your actual login API call
 
-          // Redirect to home on successful login
-          navigate("/home");
+          console.log(response.data);
+
+          if (response.data.role === "teacher") {
+            navigate("/teacher");
+          } else {
+            navigate("/home");
+          }
         } else {
           setErrorMessage("Login failed. Please check your credentials.");
         }
       } catch (error) {
         setErrorMessage("Invalid username or password");
+        // Clear input fields on error
+        setFormData({
+          username: "",
+          password: "",
+        });
       } finally {
         setLoading(false);
       }
