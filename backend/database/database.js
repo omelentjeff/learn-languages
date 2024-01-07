@@ -137,5 +137,18 @@ module.exports = {
     });
   },
 
-  // ...
+  findLanguage: (language) => {
+    const sql = "SELECT * FROM languages WHERE language_name = ?";
+    const values = [language];
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(`Language: (${language}) not found`);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  },
 };
