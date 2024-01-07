@@ -21,10 +21,23 @@ wordRouter.get("/:language", async (req, res) => {
 wordRouter.post("/:language", async (req, res) => {
   try {
     const language = req.params.language;
-    const category = req.query.category;
-    console.log(category);
+    const category = req.body.category;
     const newWord = await database.save(language, category, req.body);
     res.status(201).json(newWord);
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
+
+wordRouter.patch("/:wordId", async (req, res) => {
+  try {
+    const wordId = parseInt(req.params.wordId);
+    const updatedWord = await database.updateWord(
+      req.body.field,
+      req.body.value,
+      wordId
+    );
+    res.status(200).json(updatedWord);
   } catch (err) {
     res.status(500).json({ msg: err });
   }
