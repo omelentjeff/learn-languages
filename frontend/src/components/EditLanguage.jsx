@@ -8,7 +8,10 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
+  DialogActions,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
 
 export default function EditLanguage() {
   const { languageName } = useParams();
@@ -19,6 +22,8 @@ export default function EditLanguage() {
     finnish_word: "",
     category: "",
   });
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [wordIdToDelete, setWordIdToDelete] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,6 +61,16 @@ export default function EditLanguage() {
       width: 150,
       editable: true,
     },
+    {
+      field: "delete",
+      headerName: "Actions",
+      width: 100,
+      renderCell: (params) => (
+        <IconButton onClick={() => handleDeleteRow(params.row.word_id)}>
+          <DeleteIcon />
+        </IconButton>
+      ),
+    },
   ];
 
   const getRowId = (row) => row.word_id;
@@ -72,6 +87,29 @@ export default function EditLanguage() {
       console.log("Response from server:", response);
     } catch (error) {
       console.error("Error updating data:", error);
+    }
+  };
+
+  const handleDeleteRow = (wordId) => {
+    setWordIdToDelete(wordId);
+    setOpenConfirmation(true);
+  };
+
+  const handleConfirmation = async () => {
+    setOpenConfirmation(false);
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/words/${wordIdToDelete}`
+      );
+
+      const updatedWords = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/words/${languageName}`
+      );
+      setWords(updatedWords.data);
+      setWordIdToDelete(null);
+    } catch (error) {
+      console.error("Error deleting row:", error);
     }
   };
 
@@ -171,6 +209,23 @@ export default function EditLanguage() {
           },
         }}
       />
+      <Dialog
+        open={openConfirmation}
+        onClose={() => setOpenConfirmation(false)}
+      >
+        <DialogTitle>Delete Exercise</DialogTitle>
+        <DialogContent>
+          <p>Are you sure you want to delete this exercise?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenConfirmation(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmation} color="primary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
