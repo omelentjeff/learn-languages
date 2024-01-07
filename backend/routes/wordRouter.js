@@ -4,12 +4,19 @@ const express = require("express");
 const wordRouter = express.Router();
 
 wordRouter.get("/", async (req, res) => {
-  const language = req.params.language;
-  const words = await database.findAll(language);
+  const words = await database.findAll();
   res.json(words);
 });
 
-wordRouter.get("/");
+wordRouter.get("/:language", async (req, res) => {
+  try {
+    const language = req.params.language;
+    const words = await database.findAllWordsByLanguage(language);
+    res.json(words);
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
 
 wordRouter.post("/:language", async (req, res) => {
   try {
