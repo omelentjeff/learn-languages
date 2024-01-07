@@ -1,6 +1,7 @@
 const express = require("express");
 const wordRouter = require("./routes/wordRouter");
 const userRouter = require("./routes/userRouter");
+const languageRouter = require("./routes/languageRouter");
 const port = 8080;
 const app = express();
 const path = require("path");
@@ -17,6 +18,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(cors());
 app.use("/api/words", wordRouter);
+app.use("/api/languages", languageRouter);
 app.use("/api/users", userRouter);
 
 // app.use(express.static(path.join(__dirname, "../frontend/dist")));
