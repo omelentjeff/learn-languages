@@ -86,6 +86,21 @@ module.exports = {
     });
   },
 
+  deleteWordById: (id) => {
+    const sql = "DELETE FROM words WHERE word_id = ?";
+    const values = [id];
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  },
+
   findById: (language, id) => {
     const tableName = `${language}`;
     const sql = `SELECT * FROM words WHERE word_id = ${id} AND language_id = (SELECT language_id FROM languages WHERE language_name = '${language}')`;
