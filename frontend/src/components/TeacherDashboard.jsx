@@ -12,6 +12,8 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Hidden from "@mui/material/Hidden";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
 
 import BasicCard from "./BasicCard";
 import axios from "axios";
@@ -90,6 +92,7 @@ export default function TeacherDashboard() {
           >
             Teacher Dashboard
           </Typography>
+
           <IconButton color="inherit">
             <Hidden smDown>
               <Typography
@@ -120,6 +123,25 @@ export default function TeacherDashboard() {
         }}
       >
         <Toolbar />
+        <Button
+          color="inherit"
+          //   sx={{textAlign='center'}}
+          startIcon={<AddIcon />}
+          // Add onClick handler to navigate to the add language page
+          onClick={() => {
+            // Add logic to navigate to the 'Add Language' page
+          }}
+          sx={{
+            marginLeft: "auto",
+            marginRight: "auto",
+            display: "flex",
+            alignItems: "center",
+            marginTop: "2rem",
+            fontSize: "1rem",
+          }}
+        >
+          Add Language
+        </Button>
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Grid container spacing={3}>
             {cardsData.map((language) => (
