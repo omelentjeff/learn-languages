@@ -62,4 +62,14 @@ wordRouter.post("/validate/:myId([0-9]+)", async (req, res) => {
   }
 });
 
+wordRouter.delete("/:myId([0-9]+)", async (req, res) => {
+  try {
+    const id = parseInt(req.params.myId);
+    const result = await database.deleteWordById(id);
+    res.status(204).json(result);
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
+
 module.exports = wordRouter;
