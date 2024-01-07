@@ -23,7 +23,7 @@ userRouter.post("/signup", async (req, res) => {
       const newUser = await database.saveUser(
         req.body.username,
         hashedPassword,
-        req.body.is_admin || false // Set is_admin to true if the checkbox is checked
+        req.body.role || false
       );
       res.status(201).json(newUser);
     }
