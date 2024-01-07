@@ -18,9 +18,9 @@ module.exports = {
 
   findAllWordsByLanguage: (language) => {
     return new Promise((resolve, reject) => {
-      const tableName = `${language}`;
       pool.query(
-        `SELECT * FROM words WHERE language_id = (SELECT language_id FROM languages WHERE language_name = '${language}')`,
+        "SELECT * FROM words WHERE language_id = (SELECT language_id FROM languages WHERE language_name = ?)",
+        [language],
         (err, result) => {
           if (err) {
             reject(err);
