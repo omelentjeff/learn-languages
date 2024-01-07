@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import MuiAppBar from "@mui/material/AppBar";
@@ -125,6 +125,7 @@ export default function TeacherDashboard() {
             {cardsData.map((language) => (
               <Grid item xs={4} md={4} lg={3} key={language.language_id}>
                 <BasicCard
+                  key={language.language_id}
                   languageId={language.language_id}
                   languageName={language.language_name}
                   wordCount={language.wordCount}
