@@ -44,8 +44,8 @@ userRouter.post("/login", async (req, res) => {
       );
 
       if (isPasswordMatch) {
-        const { user_id, username } = foundUser;
-        res.status(200).json({ user_id, username });
+        const { user_id, username, role } = foundUser;
+        res.status(200).json({ user_id, username, role });
       } else {
         res.status(401).json("Incorrect password");
       }
