@@ -1,5 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
+import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -24,7 +25,9 @@ export default function BasicCard({ languageId, languageName, wordCount }) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Edit</Button>
+        <Link to={`/edit/${languageId}`}>
+          <Button size="small">Edit</Button>
+        </Link>
       </CardActions>
     </Card>
   );
