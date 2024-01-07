@@ -26,7 +26,7 @@ function App() {
           <Route path="/" element={<SignIn />} />
           <Route path="/home" element={<Home />} />
           <Route path="/teacher" element={<TeacherDashboard />} />
-          <Route path="/edit/:languageId" element={<EditLanguage />} />
+          <Route path="/edit/:languageName" element={<EditLanguage />} />
         </Routes>
       </Router>
     </ThemeProvider>
