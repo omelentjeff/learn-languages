@@ -16,6 +16,7 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 
 import BasicCard from "./BasicCard";
+import AddLanguageForm from "./AddLanguageForm";
 import axios from "axios";
 
 function Copyright(props) {
@@ -58,6 +59,19 @@ const AppBar = styled(MuiAppBar, {
 
 export default function TeacherDashboard() {
   const [cardsData, setCardsData] = useState([]);
+  const [openAddLanguage, setOpenAddLanguage] = useState(false);
+
+  const handleAddLanguageClick = () => {
+    setOpenAddLanguage(true);
+  };
+
+  const handleCloseAddLanguage = () => {
+    setOpenAddLanguage(false);
+  };
+
+  const addLanguageToState = (newLanguage) => {
+    setCardsData((prevData) => [...prevData, newLanguage]);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,23 +139,24 @@ export default function TeacherDashboard() {
         <Toolbar />
         <Button
           color="inherit"
-          //   sx={{textAlign='center'}}
           startIcon={<AddIcon />}
-          // Add onClick handler to navigate to the add language page
-          onClick={() => {
-            // Add logic to navigate to the 'Add Language' page
-          }}
+          onClick={handleAddLanguageClick}
           sx={{
             marginLeft: "auto",
             marginRight: "auto",
+            marginTop: "1rem",
             display: "flex",
             alignItems: "center",
-            marginTop: "2rem",
-            fontSize: "1rem",
           }}
         >
+          {" "}
           Add Language
         </Button>
+        <AddLanguageForm
+          open={openAddLanguage}
+          handleClose={handleCloseAddLanguage}
+          addLanguageToState={addLanguageToState}
+        />
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Grid container spacing={3}>
             {cardsData.map((language) => (
