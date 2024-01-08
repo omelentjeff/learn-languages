@@ -23,4 +23,14 @@ languageRouter.post("/", async (req, res) => {
   }
 });
 
+languageRouter.delete("/:myId([0-9]+)", async (req, res) => {
+  try {
+    const id = parseInt(req.params.myId);
+    const result = await database.deleteLanguageById(id);
+    res.status(204).json(result);
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
+
 module.exports = languageRouter;
