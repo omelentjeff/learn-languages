@@ -147,13 +147,20 @@ export default function EditLanguage() {
   };
 
   return (
-    <div style={{ height: 400, width: "100%", marginTop: "5rem" }}>
+    <div
+      style={{
+        height: 400,
+        width: "100%",
+        marginTop: "5rem",
+      }}
+    >
       <h1 style={{ textAlign: "center" }}>Edit exercises for {languageName}</h1>
 
       <Button
         variant="contained"
         color="primary"
         onClick={() => setAddExerciseDialogOpen(true)}
+        sx={{ marginBottom: "0.6rem", marginLeft: "0.6rem" }}
       >
         Add New Exercise
       </Button>
