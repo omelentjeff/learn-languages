@@ -232,4 +232,19 @@ module.exports = {
       });
     });
   },
+
+  deleteLanguageById: (id) => {
+    const sql = "DELETE FROM languages WHERE language_id = ?";
+    const values = [id];
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  },
 };
