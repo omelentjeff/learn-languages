@@ -73,7 +73,10 @@ export default function BasicCard({
       >
         <DialogTitle>Delete Exercise</DialogTitle>
         <DialogContent>
-          <p>Are you sure you want to delete this exercise?</p>
+          <p>
+            Are you sure you want to delete this language and all its
+            excercises?
+          </p>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenConfirmation(false)} color="primary">
