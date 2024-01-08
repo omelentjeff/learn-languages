@@ -73,6 +73,20 @@ export default function TeacherDashboard() {
     setCardsData((prevData) => [...prevData, newLanguage]);
   };
 
+  const handleDeleteLanguage = async (languageId) => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/languages/${languageId}`
+      );
+
+      setCardsData((prevData) =>
+        prevData.filter((language) => language.language_id !== languageId)
+      );
+    } catch (error) {
+      console.error("Error deleting language:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -166,6 +180,7 @@ export default function TeacherDashboard() {
                   languageId={language.language_id}
                   languageName={language.language_name}
                   wordCount={language.wordCount}
+                  onDelete={() => handleDeleteLanguage(language.language_id)}
                 />
               </Grid>
             ))}
