@@ -21,7 +21,12 @@ import axios from "axios";
 
 // ...
 
-export default function BasicCard({ languageId, languageName, wordCount }) {
+export default function BasicCard({
+  languageId,
+  languageName,
+  wordCount,
+  onDelete,
+}) {
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [wordIdToDelete, setWordIdToDelete] = useState(null);
 
@@ -30,18 +35,11 @@ export default function BasicCard({ languageId, languageName, wordCount }) {
     setOpenConfirmation(true);
   };
 
-  const handleConfirmation = async () => {
+  const handleConfirmation = () => {
     setOpenConfirmation(false);
 
-    try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/languages/${wordIdToDelete}`
-      );
-
-      setWordIdToDelete(null);
-    } catch (error) {
-      console.error("Error deleting row:", error);
-    }
+    setWordIdToDelete(null);
+    onDelete(languageId);
   };
 
   return (
@@ -64,7 +62,7 @@ export default function BasicCard({ languageId, languageName, wordCount }) {
         <Link to={`/edit/${languageName}`}>
           <Button size="small">Edit</Button>
         </Link>
-        <IconButton onClick={handleDeleteRow}>
+        <IconButton onClick={() => handleDeleteRow(onDelete)}>
           <DeleteIcon />
         </IconButton>
       </CardActions>
