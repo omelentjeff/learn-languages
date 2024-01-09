@@ -73,7 +73,7 @@ module.exports = {
 
   updateWord: (field, value, wordId) => {
     const sql = `UPDATE words SET ${field} = ? WHERE word_id = ?`;
-    const values = [field, wordId];
+    const values = [value, wordId]; // Use 'value' instead of 'field'
 
     return new Promise((resolve, reject) => {
       pool.query(sql, values, (err, result) => {
