@@ -14,6 +14,7 @@ import {
   DialogContent,
   TextField,
   DialogActions,
+  Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -29,6 +30,8 @@ const CustomTable = () => {
   const { languageName } = useParams();
   const [data, setData] = useState([]);
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -79,18 +82,26 @@ const CustomTable = () => {
     }
   };
 
-  const handleDeleteClick = async (id) => {
-    try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/words/${id}`);
+  const handleDeleteClick = (id) => {
+    setDeleteItemId(id);
+    setOpenDeleteDialog(true);
+  };
 
-      const updatedWords = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/words/${languageName}`
+  const handleConfirmDelete = async () => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/words/${deleteItemId}`
       );
-      setData(updatedWords.data);
+      setOpenDeleteDialog(false);
+      fetchData();
     } catch (error) {
       console.error("Error deleting row:", error);
     }
-    fetchData();
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteItemId(null);
+    setOpenDeleteDialog(false);
   };
 
   const handleInputChange = (e) => {
@@ -177,6 +188,18 @@ const CustomTable = () => {
           <Button onClick={() => setOpenEditDialog(false)}>Cancel</Button>
           <Button onClick={handleSaveEdit} color="primary">
             Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this item?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete}>Cancel</Button>
+          <Button onClick={handleConfirmDelete} color="primary">
+            Delete
           </Button>
         </DialogActions>
       </Dialog>
