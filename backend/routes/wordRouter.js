@@ -32,11 +32,15 @@ wordRouter.post("/:language", async (req, res) => {
 wordRouter.patch("/:wordId", async (req, res) => {
   try {
     const wordId = parseInt(req.params.wordId);
-    const updatedWord = await database.updateWord(
-      req.body.field,
-      req.body.value,
-      wordId
-    );
+    const { field, value } = req.body;
+
+    if (!field || !value) {
+      return res
+        .status(400)
+        .json({ msg: "Field and value are required for update" });
+    }
+
+    const updatedWord = await database.updateWord(field, value, wordId);
     res.status(200).json(updatedWord);
   } catch (err) {
     res.status(500).json({ msg: err });
