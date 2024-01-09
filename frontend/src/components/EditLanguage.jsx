@@ -38,6 +38,7 @@ const CustomTable = () => {
     category: "",
   });
   const [addExerciseDialogOpen, setAddExerciseDialogOpen] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -63,7 +64,7 @@ const CustomTable = () => {
     try {
       if (!editedData.editedField || !editedData[editedData.editedField]) {
         // Check if both field and value are present
-        console.error("Field and value are required for update");
+        setError("Field and value are required for update");
         return;
       }
 
@@ -104,7 +105,7 @@ const CustomTable = () => {
         !newExercise.finnish_word ||
         !newExercise.category
       ) {
-        console.error("Please fill in all fields");
+        setError("Please fill in all fields");
         return;
       }
 
@@ -125,6 +126,7 @@ const CustomTable = () => {
 
   const handleCancelNew = () => {
     setAddExerciseDialogOpen(false);
+    setError("");
   };
 
   const handleInputChangeAdd = (e) => {
@@ -244,6 +246,7 @@ const CustomTable = () => {
             value={editedData.category_name}
             onChange={handleInputChange}
           />
+          {error && <Typography color="error">{error}</Typography>}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenEditDialog(false)}>Cancel</Button>
@@ -265,9 +268,11 @@ const CustomTable = () => {
         </DialogActions>
       </Dialog>
 
+      {/* Add Exercise Dialog */}
       <Dialog open={addExerciseDialogOpen} onClose={handleCancelNew}>
         <DialogTitle>Add New Word Pair</DialogTitle>
         <DialogContent>
+          {error && <Typography color="error">{error}</Typography>}
           <TextField
             label="Foreign Word"
             fullWidth
