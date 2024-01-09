@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
   Button,
   Dialog,
   DialogTitle,
@@ -11,228 +16,172 @@ import {
   DialogActions,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
+import axios from "axios";
 
-export default function EditLanguage() {
-  const { languageName } = useParams();
-  const [words, setWords] = useState([]);
-  const [isAddExerciseDialogOpen, setAddExerciseDialogOpen] = useState(false);
-  const [newExercise, setNewExercise] = useState({
-    foreign_word: "",
-    finnish_word: "",
-    category: "",
+const CustomTable = () => {
+  const [editedData, setEditedData] = useState({
+    word_id: null,
+    foreign_name: "",
+    finnish_name: "",
+    category_name: "",
   });
-  const [openConfirmation, setOpenConfirmation] = useState(false);
-  const [wordIdToDelete, setWordIdToDelete] = useState(null);
+  const { languageName } = useParams();
+  const [data, setData] = useState([]);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/words/${languageName}`
-        );
-        setWords(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
     fetchData();
-  }, [languageName]);
+  }, []); // Make sure to handle the fetch logic (fetchData function)
 
-  const columns = [
-    { field: "word_id", headerName: "ID", width: 70 },
-    {
-      field: "foreign_word",
-      headerName: `${languageName} Word`,
-      type: "string",
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "finnish_word",
-      headerName: "Finnish word",
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "category_name",
-      headerName: "Category",
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "delete",
-      headerName: "Delete",
-      width: 100,
-      renderCell: (params) => (
-        <IconButton onClick={() => handleDeleteRow(params.row.word_id)}>
-          <DeleteIcon />
-        </IconButton>
-      ),
-    },
-  ];
-
-  const getRowId = (row) => row.word_id;
-
-  const handleEditCellChange = async (params) => {
-    console.log("Edit cell changed:", params);
+  const fetchData = async () => {
     try {
-      console.log("Sending PATCH request...", params.formattedValue);
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/words/${languageName}`
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleEditClick = (item) => {
+    setEditedData({ ...item });
+    setOpenEditDialog(true);
+  };
+
+  const handleSaveEdit = async () => {
+    try {
+      if (!editedData.editedField || !editedData[editedData.editedField]) {
+        // Check if both field and value are present
+        console.error("Field and value are required for update");
+        return;
+      }
+
+      console.log("Sending PATCH request...", editedData);
+
       const response = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/api/words/${params.id}`,
-        { field: params.field, value: params.props.value }
+        `${import.meta.env.VITE_API_URL}/api/words/${editedData.word_id}`,
+        {
+          field: editedData.editedField,
+          value: editedData[editedData.editedField],
+        }
       );
 
       console.log("Response from server:", response);
+      fetchData();
+      setOpenEditDialog(false); // Close the dialog after a successful update
     } catch (error) {
       console.error("Error updating data:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+      }
     }
   };
 
-  const handleDeleteRow = (wordId) => {
-    setWordIdToDelete(wordId);
-    setOpenConfirmation(true);
-  };
-
-  const handleConfirmation = async () => {
-    setOpenConfirmation(false);
-
+  const handleDeleteClick = async (id) => {
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/words/${wordIdToDelete}`
-      );
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/words/${id}`);
 
       const updatedWords = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/words/${languageName}`
       );
-      setWords(updatedWords.data);
-      setWordIdToDelete(null);
+      setData(updatedWords.data);
     } catch (error) {
       console.error("Error deleting row:", error);
     }
+    fetchData();
   };
 
-  const handleAddExercise = async () => {
-    if (
-      !newExercise.foreign_word ||
-      !newExercise.finnish_word ||
-      !newExercise.category
-    ) {
-      console.error("Please fill in all fields");
-      return;
-    }
-
-    console.log(newExercise);
-
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/words/${languageName}`,
-        newExercise
-      );
-
-      console.log("New exercise added:", response.data);
-
-      // Refresh the data by refetching the list of exercises
-      const updatedWords = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/words/${languageName}`
-      );
-      setWords(updatedWords.data);
-
-      // Close the add exercise dialog
-      setAddExerciseDialogOpen(false);
-    } catch (error) {
-      console.error("Error adding new exercise:", error);
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedData({
+      ...editedData,
+      [name]: value,
+      editedField: name,
+      editedValue: value,
+    });
   };
 
   return (
-    <div
-      style={{
-        height: 400,
-        width: "100%",
-        marginTop: "5rem",
-      }}
-    >
-      <h1 style={{ textAlign: "center" }}>Edit exercises for {languageName}</h1>
+    <div>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>{languageName} word</TableCell>
+              <TableCell>Finnish words</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((item) => (
+              <TableRow key={item.word_id}>
+                <TableCell>{item.word_id}</TableCell>
+                <TableCell>{item.foreign_word}</TableCell>
+                <TableCell>{item.finnish_word}</TableCell>
+                <TableCell>{item.category_name}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<EditIcon />}
+                    onClick={() => handleEditClick(item)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => handleDeleteClick(item.word_id)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setAddExerciseDialogOpen(true)}
-        sx={{ marginBottom: "0.6rem", marginLeft: "0.6rem" }}
-      >
-        Add New Exercise
-      </Button>
-
-      <Dialog
-        open={isAddExerciseDialogOpen}
-        onClose={() => setAddExerciseDialogOpen(false)}
-      >
-        <DialogTitle>Add New Exercise</DialogTitle>
+      {/* Edit Dialog */}
+      <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
+        <DialogTitle>Edit Item</DialogTitle>
         <DialogContent>
           <TextField
-            label={`${languageName} Word`}
+            label={languageName}
             fullWidth
-            value={newExercise.foreign_word}
-            onChange={(e) =>
-              setNewExercise({ ...newExercise, foreign_word: e.target.value })
-            }
+            name="foreign_word"
+            value={editedData.foreign_word}
+            onChange={handleInputChange}
           />
           <TextField
-            label="Finnish Word"
+            label="Finnish word"
             fullWidth
-            value={newExercise.finnish_word}
-            onChange={(e) =>
-              setNewExercise({ ...newExercise, finnish_word: e.target.value })
-            }
+            name="finnish_word"
+            value={editedData.finnish_word}
+            onChange={handleInputChange}
           />
           <TextField
             label="Category"
             fullWidth
-            value={newExercise.category}
-            onChange={(e) =>
-              setNewExercise({ ...newExercise, category: e.target.value })
-            }
+            name="category_name"
+            value={editedData.category_name}
+            onChange={handleInputChange}
           />
         </DialogContent>
-        <Button variant="contained" color="primary" onClick={handleAddExercise}>
-          Add
-        </Button>
-      </Dialog>
-
-      <DataGrid
-        rows={words}
-        columns={columns}
-        getRowId={getRowId}
-        onCellEditStop={handleEditCellChange}
-        pageSizeOptions={[5, 10]}
-        disableColumnFilter
-        disableColumnMenu
-        disableRowSelectionOnClick
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-      />
-      <Dialog
-        open={openConfirmation}
-        onClose={() => setOpenConfirmation(false)}
-      >
-        <DialogTitle>Delete Exercise</DialogTitle>
-        <DialogContent>
-          <p>Are you sure you want to delete this exercise?</p>
-        </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenConfirmation(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleConfirmation} color="primary">
-            Delete
+          <Button onClick={() => setOpenEditDialog(false)}>Cancel</Button>
+          <Button onClick={handleSaveEdit} color="primary">
+            Save
           </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
-}
+};
+
+export default CustomTable;
