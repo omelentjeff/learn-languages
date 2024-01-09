@@ -32,6 +32,12 @@ const CustomTable = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState(null);
+  const [newExercise, setNewExercise] = useState({
+    foreign_word: "",
+    finnish_word: "",
+    category: "",
+  });
+  const [addExerciseDialogOpen, setAddExerciseDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -82,6 +88,63 @@ const CustomTable = () => {
     }
   };
 
+  const handleAddNewClick = () => {
+    setNewExercise({
+      foreign_word: "",
+      finnish_word: "",
+      category: "",
+    });
+    setAddExerciseDialogOpen(true);
+  };
+
+  const handleConfirmNew = async () => {
+    try {
+      if (
+        !newExercise.foreign_word ||
+        !newExercise.finnish_word ||
+        !newExercise.category
+      ) {
+        console.error("Please fill in all fields");
+        return;
+      }
+
+      console.log("Adding new word pair...", newExercise);
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/words/${languageName}`,
+        newExercise
+      );
+
+      console.log("New word pair added:", response.data);
+      fetchData();
+      setAddExerciseDialogOpen(false);
+    } catch (error) {
+      console.error("Error adding new word pair:", error);
+    }
+  };
+
+  const handleCancelNew = () => {
+    setAddExerciseDialogOpen(false);
+  };
+
+  const handleInputChangeAdd = (e) => {
+    const { name, value } = e.target;
+    setNewExercise({
+      ...newExercise,
+      [name]: value,
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedData({
+      ...editedData,
+      [name]: value,
+      editedField: name,
+      editedValue: value,
+    });
+  };
+
   const handleDeleteClick = (id) => {
     setDeleteItemId(id);
     setOpenDeleteDialog(true);
@@ -104,18 +167,16 @@ const CustomTable = () => {
     setOpenDeleteDialog(false);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedData({
-      ...editedData,
-      [name]: value,
-      editedField: name,
-      editedValue: value,
-    });
-  };
-
   return (
     <div>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleAddNewClick}
+        style={{ marginBottom: 16 }}
+      >
+        Add new word pair
+      </Button>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -200,6 +261,39 @@ const CustomTable = () => {
           <Button onClick={handleCancelDelete}>Cancel</Button>
           <Button onClick={handleConfirmDelete} color="primary">
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={addExerciseDialogOpen} onClose={handleCancelNew}>
+        <DialogTitle>Add New Word Pair</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Foreign Word"
+            fullWidth
+            name="foreign_word"
+            value={newExercise.foreign_word}
+            onChange={handleInputChangeAdd}
+          />
+          <TextField
+            label="Finnish Word"
+            fullWidth
+            name="finnish_word"
+            value={newExercise.finnish_word}
+            onChange={handleInputChangeAdd}
+          />
+          <TextField
+            label="Category"
+            fullWidth
+            name="category"
+            value={newExercise.category}
+            onChange={handleInputChangeAdd}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelNew}>Cancel</Button>
+          <Button onClick={handleConfirmNew} color="primary">
+            Save
           </Button>
         </DialogActions>
       </Dialog>
