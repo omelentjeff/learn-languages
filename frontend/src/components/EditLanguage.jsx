@@ -15,6 +15,7 @@ import {
   TextField,
   DialogActions,
   Typography,
+  MenuItem,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -39,10 +40,12 @@ const CustomTable = () => {
   });
   const [addExerciseDialogOpen, setAddExerciseDialogOpen] = useState(false);
   const [error, setError] = useState("");
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     fetchData();
-  }, []); // Make sure to handle the fetch logic (fetchData function)
+    fetchCategories();
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -55,15 +58,29 @@ const CustomTable = () => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/categories`
+      );
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
   const handleEditClick = (item) => {
-    setEditedData({ ...item });
+    setEditedData({
+      ...item,
+      editedField: "category_name",
+      editedValue: item.category_name,
+    });
     setOpenEditDialog(true);
   };
 
   const handleSaveEdit = async () => {
     try {
       if (!editedData.editedField || !editedData[editedData.editedField]) {
-        // Check if both field and value are present
         setError("Field and value are required for update");
         return;
       }
@@ -240,12 +257,20 @@ const CustomTable = () => {
             onChange={handleInputChange}
           />
           <TextField
+            select
             label="Category"
             fullWidth
-            name="category_name"
-            value={editedData.category_name}
+            name="category_id"
+            value={editedData.category_id}
             onChange={handleInputChange}
-          />
+          >
+            {categories.map((category) => (
+              <MenuItem key={category.category_id} value={category.category_id}>
+                {category.category_name}
+              </MenuItem>
+            ))}
+          </TextField>
+
           {error && <Typography color="error">{error}</Typography>}
         </DialogContent>
         <DialogActions>
