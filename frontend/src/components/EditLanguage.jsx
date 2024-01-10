@@ -41,6 +41,8 @@ const CustomTable = () => {
   const [addExerciseDialogOpen, setAddExerciseDialogOpen] = useState(false);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState([]);
+  const [addCategoryDialogOpen, setAddCategoryDialogOpen] = useState(false);
+  const [newCategory, setNewCategory] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -186,6 +188,37 @@ const CustomTable = () => {
     setOpenDeleteDialog(false);
   };
 
+  const handleAddNewCategory = () => {
+    setAddCategoryDialogOpen(true);
+  };
+
+  const handleNewCategoryInputChange = (e) => {
+    setNewCategory(e.target.value);
+  };
+
+  const handleConfirmNewCategory = async () => {
+    try {
+      console.log("Adding new category...", newCategory);
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/categories/`,
+        { category: newCategory }
+      );
+
+      console.log("New word pair added:", response.data);
+
+      fetchCategories();
+      setAddCategoryDialogOpen(false);
+    } catch (error) {
+      console.error("Error adding new category:", error);
+    }
+  };
+
+  const handleCancelNewCategory = () => {
+    setAddCategoryDialogOpen(false);
+    setError("");
+  };
+
   return (
     <div>
       <Button
@@ -271,6 +304,15 @@ const CustomTable = () => {
             ))}
           </TextField>
 
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddNewCategory}
+            style={{ marginTop: 16 }}
+          >
+            Add New Category
+          </Button>
+
           {error && <Typography color="error">{error}</Typography>}
         </DialogContent>
         <DialogActions>
@@ -324,6 +366,25 @@ const CustomTable = () => {
           <Button onClick={handleCancelNew}>Cancel</Button>
           <Button onClick={handleConfirmNew} color="primary">
             Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={addCategoryDialogOpen} onClose={handleCancelNewCategory}>
+        <DialogTitle>Add New Category</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Category Name"
+            fullWidth
+            name="newCategory"
+            value={newCategory}
+            onChange={handleNewCategoryInputChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelNewCategory}>Cancel</Button>
+          <Button onClick={handleConfirmNewCategory} color="primary">
+            Add Category
           </Button>
         </DialogActions>
       </Dialog>
