@@ -73,7 +73,7 @@ module.exports = {
 
   updateWord: (field, value, wordId) => {
     const sql = `UPDATE words SET ${field} = ? WHERE word_id = ?`;
-    const values = [value, wordId]; // Use 'value' instead of 'field'
+    const values = [value, wordId];
 
     return new Promise((resolve, reject) => {
       pool.query(sql, values, (err, result) => {
@@ -239,6 +239,20 @@ module.exports = {
 
     return new Promise((resolve, reject) => {
       pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  },
+
+  getAllCategories: () => {
+    const sql = "SELECT * FROM categories";
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, (err, result) => {
         if (err) {
           reject(err);
         } else {
