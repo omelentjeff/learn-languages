@@ -14,6 +14,11 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import Hidden from "@mui/material/Hidden";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import TextField from "@mui/material/TextField";
 
 import BasicCard from "./BasicCard";
 import AddLanguageForm from "./AddLanguageForm";
@@ -60,6 +65,18 @@ const AppBar = styled(MuiAppBar, {
 export default function TeacherDashboard() {
   const [cardsData, setCardsData] = useState([]);
   const [openAddLanguage, setOpenAddLanguage] = useState(false);
+  const [newLanguage, setNewLanguage] = useState("");
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/languages`
+      );
+      setCardsData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleAddLanguageClick = () => {
     setOpenAddLanguage(true);
@@ -67,10 +84,6 @@ export default function TeacherDashboard() {
 
   const handleCloseAddLanguage = () => {
     setOpenAddLanguage(false);
-  };
-
-  const addLanguageToState = (newLanguage) => {
-    setCardsData((prevData) => [...prevData, newLanguage]);
   };
 
   const handleDeleteLanguage = async (languageId) => {
@@ -87,18 +100,29 @@ export default function TeacherDashboard() {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/languages`
-        );
-        setCardsData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  const handleNewLanguageInputChange = (event) => {
+    setNewLanguage(event.target.value);
+  };
 
+  const handleConfirmNewLanguage = async () => {
+    try {
+      console.log("Adding new clanguage...", newLanguage);
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/languages/`,
+        { language: newLanguage }
+      );
+
+      console.log("New language added:", response.data);
+
+      fetchData();
+      handleCloseAddLanguage();
+    } catch (error) {
+      console.error("Error adding new category:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -151,6 +175,7 @@ export default function TeacherDashboard() {
         }}
       >
         <Toolbar />
+
         <Button
           color="inherit"
           startIcon={<AddIcon />}
@@ -166,11 +191,26 @@ export default function TeacherDashboard() {
           {" "}
           Add Language
         </Button>
-        <AddLanguageForm
-          open={openAddLanguage}
-          handleClose={handleCloseAddLanguage}
-          addLanguageToState={addLanguageToState}
-        />
+
+        <Dialog open={openAddLanguage} onClose={handleCloseAddLanguage}>
+          <DialogTitle>Add New Language</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Language Name"
+              fullWidth
+              name="newLanguage"
+              value={newLanguage}
+              onChange={handleNewLanguageInputChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseAddLanguage}>Cancel</Button>
+            <Button onClick={handleConfirmNewLanguage} color="primary">
+              Add Language
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Grid container spacing={3}>
             {cardsData.map((language) => (
