@@ -105,7 +105,7 @@ const CustomTable = () => {
 
       console.log("Response from server:", response);
       fetchData();
-      setOpenEditDialog(false); // Close the dialog after a successful update
+      setOpenEditDialog(false);
     } catch (error) {
       console.error("Error updating data:", error);
       if (error.response) {
@@ -253,7 +253,7 @@ const CustomTable = () => {
                 <TableCell>{item.foreign_word}</TableCell>
                 <TableCell>{item.finnish_word}</TableCell>
                 <TableCell>{item.category_name}</TableCell>
-                <TableCell>
+                <TableCell style={{ display: "flex", gap: "1rem" }}>
                   <Button
                     variant="outlined"
                     color="primary"
