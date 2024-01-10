@@ -76,14 +76,20 @@ const CustomTable = () => {
       ...item,
       editedField: "category_name",
       editedValue: item.category_name,
+      category_name_orig: item.category_name,
     });
     setOpenEditDialog(true);
   };
 
   const handleSaveEdit = async () => {
     try {
-      if (!editedData.editedField || !editedData[editedData.editedField]) {
-        setError("Field and value are required for update");
+      if (
+        !editedData.editedField ||
+        !editedData[editedData.editedField] ||
+        editedData[editedData.editedField] ===
+          editedData[editedData.editedField + "_orig"]
+      ) {
+        setOpenEditDialog(false);
         return;
       }
 
