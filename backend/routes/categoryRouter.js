@@ -11,4 +11,14 @@ categoryRouter.get("/", async (req, res) => {
   }
 });
 
+categoryRouter.post("/", async (req, res) => {
+  try {
+    const categoryName = req.body.category;
+    const newCategory = await database.addNewCategory(categoryName);
+    res.status(201).json(newCategory);
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
+
 module.exports = categoryRouter;
