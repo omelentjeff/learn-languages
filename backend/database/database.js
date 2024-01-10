@@ -261,4 +261,19 @@ module.exports = {
       });
     });
   },
+
+  addNewCategory: (categoryName) => {
+    const sql = "INSERT INTO categories (category_name) VALUES (?)";
+    const values = [categoryName];
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  },
 };
