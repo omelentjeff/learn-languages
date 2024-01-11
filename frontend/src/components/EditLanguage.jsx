@@ -21,8 +21,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 
-// TODO: NEW CATEGORY DOESN'T APPEAR IN THE LIST UNTIL AFTER REFRESH
-
 const CustomTable = () => {
   const [editedData, setEditedData] = useState({
     word_id: null,
@@ -77,7 +75,7 @@ const CustomTable = () => {
   const handleEditClick = (item) => {
     setEditedData({
       ...item,
-      editedField: "category_id", // Use "category_id" instead of "category_name"
+      editedField: "category_id",
       editedValue: item.category_id,
     });
     setOpenEditDialog(true);
@@ -115,7 +113,7 @@ const CustomTable = () => {
     setNewExercise({
       foreign_word: "",
       finnish_word: "",
-      category_id: "", // Set the initial value for category_id
+      category_id: "",
     });
     setAddExerciseDialogOpen(true);
   };
@@ -125,7 +123,7 @@ const CustomTable = () => {
       if (
         !newExercise.foreign_word ||
         !newExercise.finnish_word ||
-        !newExercise.category
+        !newExercise.category_id
       ) {
         setError("Please fill in all fields");
         return;
@@ -156,10 +154,24 @@ const CustomTable = () => {
 
   const handleInputChangeAdd = (e) => {
     const { name, value } = e.target;
-    setNewExercise({
-      ...newExercise,
-      [name]: value,
-    });
+
+    if (name === "category_id") {
+      const selectedCategory = categories.find(
+        (category) => category.category_id === value
+      );
+      if (selectedCategory) {
+        setNewExercise({
+          ...newExercise,
+          category_id: value,
+          category: selectedCategory.category_name,
+        });
+      }
+    } else {
+      setNewExercise({
+        ...newExercise,
+        [name]: value,
+      });
+    }
   };
 
   const handleInputChange = (e) => {
