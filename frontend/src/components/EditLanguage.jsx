@@ -77,20 +77,15 @@ const CustomTable = () => {
   const handleEditClick = (item) => {
     setEditedData({
       ...item,
-      editedField: "category_name",
-      editedValue: item.category_name,
+      editedField: "category_id", // Use "category_id" instead of "category_name"
+      editedValue: item.category_id,
     });
     setOpenEditDialog(true);
   };
 
   const handleSaveEdit = async () => {
     try {
-      if (
-        !editedData.editedField ||
-        !editedData[editedData.editedField] ||
-        editedData[editedData.editedField] ===
-          editedData[editedData.editedField]
-      ) {
+      if (!editedData.editedField || !editedData[editedData.editedField]) {
         setOpenEditDialog(false);
         return;
       }
@@ -107,7 +102,7 @@ const CustomTable = () => {
 
       console.log("Response from server:", response);
       fetchData();
-      setOpenEditDialog(false); // Close the dialog after a successful update
+      setOpenEditDialog(false);
     } catch (error) {
       console.error("Error updating data:", error);
       if (error.response) {
@@ -170,12 +165,27 @@ const CustomTable = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditedData({
-      ...editedData,
-      [name]: value,
-      editedField: name,
-      editedValue: value,
-    });
+
+    // For the category field, find the corresponding category_name
+    if (name === "category_id") {
+      const selectedCategory = categories.find(
+        (category) => category.category_id === value
+      );
+      if (selectedCategory) {
+        setEditedData({
+          ...editedData,
+          category_id: value,
+          category_name: selectedCategory.category_name,
+        });
+      }
+    } else {
+      setEditedData({
+        ...editedData,
+        [name]: value,
+        editedField: name,
+        editedValue: value,
+      });
+    }
   };
 
   const handleDeleteClick = (id) => {
@@ -247,7 +257,7 @@ const CustomTable = () => {
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>{languageName} word</TableCell>
-              <TableCell>Finnish words</TableCell>
+              <TableCell>Finnish word</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -353,7 +363,7 @@ const CustomTable = () => {
         <DialogContent>
           {error && <Typography color="error">{error}</Typography>}
           <TextField
-            label="Foreign Word"
+            label={languageName + " word"}
             fullWidth
             name="foreign_word"
             value={newExercise.foreign_word}

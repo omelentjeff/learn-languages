@@ -10,8 +10,9 @@ module.exports = {
       pool.query(`SELECT * FROM words`, (err, result) => {
         if (err) {
           reject(err);
+        } else {
+          resolve(result);
         }
-        resolve(result);
       });
     });
   },
