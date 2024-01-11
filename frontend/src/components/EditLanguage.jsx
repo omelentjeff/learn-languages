@@ -115,7 +115,7 @@ const CustomTable = () => {
     setNewExercise({
       foreign_word: "",
       finnish_word: "",
-      category: "",
+      category_id: "", // Set the initial value for category_id
     });
     setAddExerciseDialogOpen(true);
   };
@@ -140,10 +140,9 @@ const CustomTable = () => {
 
       console.log("New word pair added:", response.data);
 
-      // Fetch categories after adding a new word
       fetchCategories();
 
-      fetchData(); // Fetch data including the newly added word
+      fetchData();
       setAddExerciseDialogOpen(false);
     } catch (error) {
       console.error("Error adding new word pair:", error);
@@ -166,7 +165,6 @@ const CustomTable = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // For the category field, find the corresponding category_name
     if (name === "category_id") {
       const selectedCategory = categories.find(
         (category) => category.category_id === value
@@ -377,12 +375,28 @@ const CustomTable = () => {
             onChange={handleInputChangeAdd}
           />
           <TextField
+            select
             label="Category"
             fullWidth
-            name="category"
-            value={newExercise.category}
+            name="category_id"
+            value={newExercise.category_id}
             onChange={handleInputChangeAdd}
-          />
+          >
+            {categories.map((category) => (
+              <MenuItem key={category.category_id} value={category.category_id}>
+                {category.category_name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddNewCategory}
+            style={{ marginTop: 16 }}
+          >
+            Add New Category
+          </Button>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancelNew}>Cancel</Button>
