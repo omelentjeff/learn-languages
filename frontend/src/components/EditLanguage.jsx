@@ -21,6 +21,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 
+// TODO: NEW CATEGORY DOESN'T APPEAR IN THE LIST UNTIL AFTER REFRESH
+
 const CustomTable = () => {
   const [editedData, setEditedData] = useState({
     word_id: null,
@@ -66,6 +68,7 @@ const CustomTable = () => {
         `${import.meta.env.VITE_API_URL}/api/categories`
       );
       setCategories(response.data);
+      console.log("Categories fetch: ", response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -76,7 +79,6 @@ const CustomTable = () => {
       ...item,
       editedField: "category_name",
       editedValue: item.category_name,
-      category_name_orig: item.category_name,
     });
     setOpenEditDialog(true);
   };
@@ -87,7 +89,7 @@ const CustomTable = () => {
         !editedData.editedField ||
         !editedData[editedData.editedField] ||
         editedData[editedData.editedField] ===
-          editedData[editedData.editedField + "_orig"]
+          editedData[editedData.editedField]
       ) {
         setOpenEditDialog(false);
         return;
@@ -105,7 +107,7 @@ const CustomTable = () => {
 
       console.log("Response from server:", response);
       fetchData();
-      setOpenEditDialog(false);
+      setOpenEditDialog(false); // Close the dialog after a successful update
     } catch (error) {
       console.error("Error updating data:", error);
       if (error.response) {
@@ -142,7 +144,11 @@ const CustomTable = () => {
       );
 
       console.log("New word pair added:", response.data);
-      fetchData();
+
+      // Fetch categories after adding a new word
+      fetchCategories();
+
+      fetchData(); // Fetch data including the newly added word
       setAddExerciseDialogOpen(false);
     } catch (error) {
       console.error("Error adding new word pair:", error);
@@ -253,7 +259,7 @@ const CustomTable = () => {
                 <TableCell>{item.foreign_word}</TableCell>
                 <TableCell>{item.finnish_word}</TableCell>
                 <TableCell>{item.category_name}</TableCell>
-                <TableCell style={{ display: "flex", gap: "1rem" }}>
+                <TableCell>
                   <Button
                     variant="outlined"
                     color="primary"
