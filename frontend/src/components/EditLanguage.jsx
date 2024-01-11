@@ -267,7 +267,7 @@ const CustomTable = () => {
                 <TableCell>{item.foreign_word}</TableCell>
                 <TableCell>{item.finnish_word}</TableCell>
                 <TableCell>{item.category_name}</TableCell>
-                <TableCell>
+                <TableCell style={{ display: "flex", gap: "1rem" }}>
                   <Button
                     variant="outlined"
                     color="primary"
