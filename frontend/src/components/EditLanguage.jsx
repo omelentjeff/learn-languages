@@ -83,19 +83,32 @@ const CustomTable = () => {
 
   const handleSaveEdit = async () => {
     try {
-      if (!editedData.editedField || !editedData[editedData.editedField]) {
-        setOpenEditDialog(false);
+      if (
+        !editedData.foreign_word ||
+        !editedData.finnish_word ||
+        !editedData.category_id
+      ) {
+        setError("Please fill in all fields");
         return;
       }
 
-      console.log("Sending PATCH request...", editedData);
+      // Extract only the edited fields from the editedData
+      const editedFields = {};
+      if (editedData.foreign_word !== undefined) {
+        editedFields.foreign_word = editedData.foreign_word;
+      }
+      if (editedData.finnish_word !== undefined) {
+        editedFields.finnish_word = editedData.finnish_word;
+      }
+      if (editedData.category_id !== undefined) {
+        editedFields.category_id = editedData.category_id;
+      }
 
-      const response = await axios.patch(
+      console.log("Sending PUT request...", editedFields);
+
+      const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/words/${editedData.word_id}`,
-        {
-          field: editedData.editedField,
-          value: editedData[editedData.editedField],
-        }
+        editedFields
       );
 
       console.log("Response from server:", response);
@@ -182,19 +195,19 @@ const CustomTable = () => {
         (category) => category.category_id === value
       );
       if (selectedCategory) {
-        setEditedData({
-          ...editedData,
+        setEditedData((prevData) => ({
+          ...prevData,
           category_id: value,
           category_name: selectedCategory.category_name,
-        });
+        }));
       }
     } else {
-      setEditedData({
-        ...editedData,
+      setEditedData((prevData) => ({
+        ...prevData,
         [name]: value,
         editedField: name,
         editedValue: value,
-      });
+      }));
     }
   };
 
