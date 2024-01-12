@@ -72,19 +72,24 @@ module.exports = {
     });
   },
 
-  updateWord: (field, value, wordId) => {
-    const sql = `UPDATE words SET ${field} = ? WHERE word_id = ?`;
-    const values = [value, wordId];
+  updateWord: (wordId, updates) => {
+    const updatePromises = Object.keys(updates).map(async (field) => {
+      const value = updates[field];
+      const sql = `UPDATE words SET ${field} = ? WHERE word_id = ?`;
+      const values = [value, wordId];
 
-    return new Promise((resolve, reject) => {
-      pool.query(sql, values, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
+      return new Promise((resolve, reject) => {
+        pool.query(sql, values, (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
       });
     });
+
+    return Promise.all(updatePromises);
   },
 
   deleteWordById: (id) => {
