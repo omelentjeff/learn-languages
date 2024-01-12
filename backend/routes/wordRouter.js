@@ -29,18 +29,24 @@ wordRouter.post("/:language", async (req, res) => {
   }
 });
 
-wordRouter.patch("/:wordId", async (req, res) => {
+wordRouter.put("/:wordId", async (req, res) => {
   try {
     const wordId = parseInt(req.params.wordId);
-    const { field, value } = req.body;
 
-    if (!field || !value) {
-      return res
-        .status(400)
-        .json({ msg: "Field and value are required for update" });
+    if (!req.body || !Object.keys(req.body).length) {
+      return res.status(400).json({ msg: "Invalid data for update" });
     }
 
-    const updatedWord = await database.updateWord(field, value, wordId);
+    // Map category_name to category_id if it's present
+    if (req.body.category_name) {
+      const category = await database.getCategoryByName(req.body.category_name);
+      if (category) {
+        req.body.category_id = category.category_id;
+        delete req.body.category_name; // Remove category_name if present
+      }
+    }
+
+    const updatedWord = await database.updateWord(wordId, req.body);
     res.status(200).json(updatedWord);
   } catch (err) {
     res.status(500).json({ msg: err });
