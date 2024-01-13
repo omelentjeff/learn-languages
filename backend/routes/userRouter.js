@@ -2,6 +2,7 @@ const database = require("../database/database");
 const express = require("express");
 const userRouter = express.Router();
 const bcrypt = require("bcrypt");
+const { createToken } = require("../utils/jwt");
 
 userRouter.get("/", async (req, res) => {
   try {
@@ -25,12 +26,17 @@ userRouter.post("/signup", async (req, res) => {
         hashedPassword,
         req.body.role || false
       );
+
+      const addedUser = await database.findUserByUsername(req.body.username);
+      const token = createToken(addedUser.user_id);
+      res.cookie("jwt", token, { httpOnly: true });
       res.status(201).json(newUser);
     }
   } catch (err) {
     res.status(500).json({ msg: "Internal server error" });
   }
 });
+
 userRouter.post("/login", async (req, res) => {
   try {
     const foundUser = await database.findUserByUsername(req.body.username);
@@ -45,7 +51,10 @@ userRouter.post("/login", async (req, res) => {
 
       if (isPasswordMatch) {
         const { user_id, username, role } = foundUser;
-        res.status(200).json({ user_id, username, role });
+        const token = createToken(user_id);
+        console.log("Generated Token:", token);
+        res.cookie("jwt", token, { httpOnly: true });
+        res.status(200).json({ user_id, username, role, cookie: token });
       } else {
         res.status(401).json("Incorrect password");
       }
