@@ -8,6 +8,7 @@ const app = express();
 const path = require("path");
 const cors = require("cors");
 const mysql = require("mysql");
+const cookieParser = require("cookie-parser");
 const config = require("./config");
 const connection = mysql.createPool(config);
 
@@ -17,7 +18,14 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-app.use(cors());
+
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use("/api/words", wordRouter);
 app.use("/api/languages", languageRouter);
 app.use("/api/users", userRouter);
