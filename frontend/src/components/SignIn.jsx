@@ -43,7 +43,8 @@ function SignIn() {
       try {
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/api/users/login`,
-          user
+          user,
+          { withCredentials: true }
         );
 
         if (response.status === 200) {
@@ -51,6 +52,7 @@ function SignIn() {
           await new Promise((resolve) => setTimeout(resolve, 1000));
 
           console.log(response.data);
+          console.log("Response Headers:", response.headers);
 
           if (response.data.role === "teacher") {
             navigate("/teacher");
