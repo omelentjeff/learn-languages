@@ -9,6 +9,7 @@ import EditLanguage from "./components/EditLanguage"; //
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import CategorySelector from "./components/CategorySelector";
 
 const darkTheme = createTheme({
   palette: {
@@ -29,6 +30,10 @@ function App() {
           <Route
             path="/edit/:languageName"
             element={<EditLanguage language />}
+          />
+          <Route
+            path="/play/:languageName"
+            element={<CategorySelector language />}
           />
         </Routes>
       </Router>
