@@ -84,12 +84,33 @@ const ExcercisePage = () => {
                 const userAnswer = e.target.answer.value;
                 handleAnswerSubmit(userAnswer);
               }}
+              style={{ maxWidth: "300px", margin: "auto" }}
             >
-              <label>
+              <label style={{ display: "block", marginBottom: "10px" }}>
                 Your Answer:
-                <input type="text" name="answer" />
+                <input
+                  type="text"
+                  name="answer"
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                  }}
+                />
               </label>
-              <button type="submit">Submit</button>
+              <button
+                type="submit"
+                style={{
+                  background: "#4CAF50",
+                  color: "white",
+                  padding: "10px 15px",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Submit
+              </button>
             </form>
           </div>
         </div>
@@ -110,7 +131,7 @@ const ExcercisePage = () => {
                 <li key={index} style={{ listStyle: "none" }}>
                   <strong>Question:</strong> {item.question},{" "}
                   <strong>Your Answer:</strong> {item.answer},{" "}
-                  <strong>Correct:</strong> {item.isCorrect ? "Yes" : "No"}
+                  <strong>{item.isCorrect ? "Correct" : "Wrong"}</strong>
                 </li>
               ))}
             </ul>
