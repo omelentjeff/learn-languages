@@ -24,6 +24,7 @@ import BasicCard from "./BasicCard";
 import AddLanguageForm from "./AddLanguageForm";
 import axios from "axios";
 import PlayCard from "./Playcard";
+import Layout from "./Layout";
 
 function Copyright(props) {
   return (
@@ -82,41 +83,7 @@ export default function Home() {
   }, []);
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="absolute">
-        <Toolbar
-          sx={{
-            pr: "24px",
-          }}
-        >
-          <Typography
-            component="h1"
-            variant="h5"
-            color="inherit"
-            noWrap
-            sx={{ flexGrow: 1, textAlign: "center" }}
-          >
-            Learn Languages!
-          </Typography>
-
-          <IconButton color="inherit">
-            <Hidden smDown>
-              <Typography
-                variant="body1"
-                color="inherit"
-                sx={{ marginRight: 1 }}
-              >
-                Log Out
-              </Typography>
-            </Hidden>
-            <Badge color="secondary">
-              <LogoutIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-
+    <Layout>
       <Box
         component="main"
         sx={{
@@ -147,6 +114,6 @@ export default function Home() {
           <Copyright sx={{ mt: 20 }} />
         </Container>
       </Box>
-    </Box>
+    </Layout>
   );
 }
