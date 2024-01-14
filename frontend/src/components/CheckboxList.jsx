@@ -40,6 +40,7 @@ export default function CheckboxList({ onSelectCategories }) {
     }
 
     setChecked(newChecked);
+    onSelectCategories(newChecked);
   };
 
   useEffect(() => {

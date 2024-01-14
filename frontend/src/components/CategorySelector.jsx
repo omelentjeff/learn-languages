@@ -15,7 +15,12 @@ const CategorySelector = () => {
 
   const handleStartClick = () => {
     console.log("Selected Categories:", selectedCategories);
-    navigate(`/${languageName}/play`);
+    navigate(`/play/${languageName}`, {
+      state: {
+        languageName: languageName,
+        selectedCategories: selectedCategories,
+      },
+    });
   };
 
   return (
