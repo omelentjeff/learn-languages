@@ -8,8 +8,8 @@ import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
 
-export default function CheckboxList() {
-  const [checked, setChecked] = useState([0]);
+export default function CheckboxList({ onSelectCategories }) {
+  const [checked, setChecked] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const { languageName } = useParams();
 
@@ -42,40 +42,36 @@ export default function CheckboxList() {
     setChecked(newChecked);
   };
 
-  return (
-    <div>
-      {categoryData.length === 0 ? (
-        <p>No categories available</p>
-      ) : (
-        <List
-          sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
-        >
-          {categoryData.map((category) => {
-            const labelId = category.category_id;
+  useEffect(() => {
+    onSelectCategories(checked);
+  }, [onSelectCategories, checked]);
 
-            return (
-              <ListItem key={category.category_id} disablePadding>
-                <ListItemButton
-                  role={undefined}
-                  onClick={handleToggle(category.category_id)}
-                  dense
-                >
-                  <ListItemIcon>
-                    <Checkbox
-                      edge="start"
-                      checked={checked.indexOf(category.category_id) !== -1}
-                      tabIndex={-1}
-                      disableRipple
-                      inputProps={{ "aria-labelledby": labelId }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText id={labelId} primary={category.category_name} />
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
-        </List>
-      )}
-    </div>
+  return (
+    <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+      {categoryData.map((category) => {
+        const labelId = category.category_id;
+
+        return (
+          <ListItem key={category.category_id} disablePadding>
+            <ListItemButton
+              role={undefined}
+              onClick={handleToggle(category.category_id)}
+              dense
+            >
+              <ListItemIcon>
+                <Checkbox
+                  edge="start"
+                  checked={checked.indexOf(category.category_id) !== -1}
+                  tabIndex={-1}
+                  disableRipple
+                  inputProps={{ "aria-labelledby": labelId }}
+                />
+              </ListItemIcon>
+              <ListItemText id={labelId} primary={category.category_name} />
+            </ListItemButton>
+          </ListItem>
+        );
+      })}
+    </List>
   );
 }
