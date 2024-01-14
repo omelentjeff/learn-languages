@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import CheckboxList from "./CheckboxList";
+import Button from "@mui/material/Button";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-const CenteredCheckboxList = () => {
+const CategorySelector = () => {
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const navigate = useNavigate();
+  const { languageName } = useParams();
+
+  const handleSelectCategories = (categories) => {
+    setSelectedCategories(categories);
+  };
+
+  const handleStartClick = () => {
+    console.log("Selected Categories:", selectedCategories);
+    navigate(`/${languageName}/play`);
+  };
+
   return (
     <div
       style={{
@@ -12,10 +28,13 @@ const CenteredCheckboxList = () => {
         flexDirection: "column",
       }}
     >
-      <h2>Choose the categories</h2>
-      <CheckboxList />
+      <h2>Choose the categories you want to practice</h2>
+      <CheckboxList onSelectCategories={handleSelectCategories} />
+      <Button color="primary" onClick={handleStartClick}>
+        START
+      </Button>
     </div>
   );
 };
 
-export default CenteredCheckboxList;
+export default CategorySelector;
