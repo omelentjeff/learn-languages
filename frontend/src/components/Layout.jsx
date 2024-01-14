@@ -7,11 +7,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
-import Link from "@mui/material/Link";
+import { Link } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import HomeIcon from "@mui/icons-material/Home";
 import Hidden from "@mui/material/Hidden";
-import Container from "@mui/material/Container";
 
 const drawerWidth = 240;
 
@@ -43,12 +42,15 @@ export default function Layout({ children }) {
             pr: "24px",
           }}
         >
-          <IconButton color="inherit">
-            <Hidden smDown></Hidden>
-            <Badge color="secondary">
-              <HomeIcon />
-            </Badge>
-          </IconButton>
+          {" "}
+          <Link to={`/home`}>
+            <IconButton color="white">
+              <Hidden smDown></Hidden>
+              <Badge color="secondary">
+                <HomeIcon />
+              </Badge>
+            </IconButton>
+          </Link>
           <Typography
             component="h1"
             variant="h5"
@@ -58,7 +60,6 @@ export default function Layout({ children }) {
           >
             Learn Languages!
           </Typography>
-
           <IconButton color="inherit">
             <Hidden smDown>
               <Typography
