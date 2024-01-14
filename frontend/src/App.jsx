@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Home from "./components/Home";
+import ExcercisePage from "./components/ExcercisePage";
 import TeacherDashboard from "./components/TeacherDashboard";
 import EditLanguage from "./components/EditLanguage"; //
 
@@ -32,9 +33,10 @@ function App() {
             element={<EditLanguage language />}
           />
           <Route
-            path="/play/:languageName"
+            path="/:languageName"
             element={<CategorySelector language />}
           />
+          <Route path="/play/:language" element={<ExcercisePage />} />
         </Routes>
       </Router>
     </ThemeProvider>
