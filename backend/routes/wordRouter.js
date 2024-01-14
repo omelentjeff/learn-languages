@@ -82,4 +82,18 @@ wordRouter.delete("/:myId([0-9]+)", async (req, res) => {
   }
 });
 
+wordRouter.post("/", async (req, res) => {
+  try {
+    const language = req.body.language;
+    const categories = req.body.categories;
+    const words = await database.getWordsByLanguageAndCategories(
+      language,
+      categories
+    );
+    res.json(words);
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
+
 module.exports = wordRouter;
