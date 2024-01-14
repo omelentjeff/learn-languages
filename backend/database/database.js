@@ -107,6 +107,27 @@ module.exports = {
     });
   },
 
+  getWordsByLanguageAndCategories: (language, categories) => {
+    const placeholders = categories.map(() => "?").join(", ");
+    const sql = `
+      SELECT word_id, foreign_word, finnish_word 
+      FROM words 
+      WHERE 
+        language_id = (SELECT language_id FROM languages WHERE language_name = ?) 
+        AND category_id IN (${placeholders});
+    `;
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, [language, ...categories], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  },
+
   findById: (language, id) => {
     const tableName = `${language}`;
     const sql = `SELECT * FROM words WHERE word_id = ${id} AND language_id = (SELECT language_id FROM languages WHERE language_name = '${language}')`;
