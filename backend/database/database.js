@@ -282,4 +282,20 @@ module.exports = {
       });
     });
   },
+
+  getCategoriesById: (language) => {
+    const sql =
+      "SELECT DISTINCT categories.category_id, categories.category_name FROM categories JOIN words ON categories.category_id = words.category_id JOIN languages ON words.language_id = languages.language_id WHERE languages.language_name = ?";
+    const values = [language];
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, values, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  },
 };
