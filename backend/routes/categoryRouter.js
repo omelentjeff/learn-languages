@@ -11,6 +11,15 @@ categoryRouter.get("/", async (req, res) => {
   }
 });
 
+categoryRouter.get("/:language", async (req, res) => {
+  try {
+    const categories = await database.getCategoriesById(req.params.language);
+    res.json(categories);
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
+
 categoryRouter.post("/", async (req, res) => {
   try {
     const categoryName = req.body.category;
