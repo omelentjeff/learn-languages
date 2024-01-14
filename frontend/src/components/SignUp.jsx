@@ -83,8 +83,13 @@ export default function SignUp() {
           user
         );
 
-        if (response.status === 201) {
+        if (response.status === 201 && response.data.role === "student") {
           navigate("/home");
+        } else if (
+          response.status === 201 &&
+          response.data.role === "teacher"
+        ) {
+          navigate("/teacher");
         } else {
           setErrorMessage("Signup failed. Please check your credentials.");
         }
