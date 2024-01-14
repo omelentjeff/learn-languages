@@ -1,5 +1,3 @@
-// Layout.jsx
-
 import React from "react";
 import { styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import Link from "@mui/material/Link";
 import LogoutIcon from "@mui/icons-material/Logout";
+import HomeIcon from "@mui/icons-material/Home";
 import Hidden from "@mui/material/Hidden";
 import Container from "@mui/material/Container";
 
@@ -44,6 +43,12 @@ export default function Layout({ children }) {
             pr: "24px",
           }}
         >
+          <IconButton color="inherit">
+            <Hidden smDown></Hidden>
+            <Badge color="secondary">
+              <HomeIcon />
+            </Badge>
+          </IconButton>
           <Typography
             component="h1"
             variant="h5"
