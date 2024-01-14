@@ -28,9 +28,10 @@ userRouter.post("/signup", async (req, res) => {
       );
 
       const addedUser = await database.findUserByUsername(req.body.username);
-      const token = createToken(addedUser.user_id);
-      res.cookie("jwt", token, { httpOnly: true });
-      res.status(201).json(newUser);
+      // const token = createToken(addedUser.user_id);
+      // res.cookie("jwt", token, { httpOnly: true });
+      // res.cookie("role", role);
+      res.status(201).json(addedUser);
     }
   } catch (err) {
     res.status(500).json({ msg: "Internal server error" });
@@ -52,8 +53,9 @@ userRouter.post("/login", async (req, res) => {
       if (isPasswordMatch) {
         const { user_id, username, role } = foundUser;
         const token = createToken(user_id);
-        console.log("Generated Token:", token);
+        // console.log("Generated Token:", token);
         res.cookie("jwt", token, { httpOnly: true });
+        res.cookie("role", role);
         res.status(200).json({ user_id, username, role, cookie: token });
       } else {
         res.status(401).json("Incorrect password");
