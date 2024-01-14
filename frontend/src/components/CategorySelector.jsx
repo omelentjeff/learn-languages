@@ -3,6 +3,7 @@ import CheckboxList from "./CheckboxList";
 import Button from "@mui/material/Button";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import Layout from "./Layout";
 
 const CategorySelector = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -24,21 +25,23 @@ const CategorySelector = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        flexDirection: "column",
-      }}
-    >
-      <h2>Choose the categories you want to practice</h2>
-      <CheckboxList onSelectCategories={handleSelectCategories} />
-      <Button color="primary" onClick={handleStartClick}>
-        START
-      </Button>
-    </div>
+    <Layout>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          flexDirection: "column",
+        }}
+      >
+        <h2>Choose the categories you want to practice</h2>
+        <CheckboxList onSelectCategories={handleSelectCategories} />
+        <Button color="primary" onClick={handleStartClick}>
+          START
+        </Button>
+      </div>
+    </Layout>
   );
 };
 

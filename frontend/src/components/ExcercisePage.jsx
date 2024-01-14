@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import Layout from "./Layout";
 
 const ExcercisePage = () => {
   const { state } = useLocation();
@@ -66,60 +67,64 @@ const ExcercisePage = () => {
     // Display the question
     const currentExercise = exercises[currentQuestionIndex];
     return (
-      <div style={{ textAlign: "center" }}>
-        {isAnswerCorrect !== null && (
-          <div style={{ color: isAnswerCorrect ? "green" : "red" }}>
-            {isAnswerCorrect ? "Correct!" : "Incorrect."}
-          </div>
-        )}
+      <Layout>
+        <div style={{ textAlign: "center" }}>
+          {isAnswerCorrect !== null && (
+            <div style={{ color: isAnswerCorrect ? "green" : "red" }}>
+              {isAnswerCorrect ? "Correct!" : "Incorrect."}
+            </div>
+          )}
 
-        <div>
-          <h2>Question {currentQuestionIndex + 1}</h2>
-          <p>{currentExercise.foreign_word}</p>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const userAnswer = e.target.answer.value;
-              handleAnswerSubmit(userAnswer);
-            }}
-          >
-            <label>
-              Your Answer:
-              <input type="text" name="answer" />
-            </label>
-            <button type="submit">Submit</button>
-          </form>
+          <div>
+            <h2>Question {currentQuestionIndex + 1}</h2>
+            <p>{currentExercise.foreign_word}</p>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const userAnswer = e.target.answer.value;
+                handleAnswerSubmit(userAnswer);
+              }}
+            >
+              <label>
+                Your Answer:
+                <input type="text" name="answer" />
+              </label>
+              <button type="submit">Submit</button>
+            </form>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   // Display the list of questions and answers at the end
   return (
-    <div style={{ textAlign: "center" }}>
-      <h1>Exercise Completed</h1>
-      <h2>Results:</h2>
-      {exercises.length > 0 ? (
-        <>
-          <ul>
-            {userAnswers.map((item, index) => (
-              <li key={index} style={{ listStyle: "none" }}>
-                <strong>Question:</strong> {item.question},{" "}
-                <strong>Your Answer:</strong> {item.answer},{" "}
-                <strong>Correct:</strong> {item.isCorrect ? "Yes" : "No"}
-              </li>
-            ))}
-          </ul>
-          <h2>
-            You scored:{" "}
-            {userAnswers.filter((answer) => answer.isCorrect).length} /{" "}
-            {exercises.length}
-          </h2>
-        </>
-      ) : (
-        <p>No exercises available</p>
-      )}
-    </div>
+    <Layout>
+      <div style={{ textAlign: "center" }}>
+        <h1>Exercise Completed</h1>
+        <h2>Results:</h2>
+        {exercises.length > 0 ? (
+          <>
+            <ul>
+              {userAnswers.map((item, index) => (
+                <li key={index} style={{ listStyle: "none" }}>
+                  <strong>Question:</strong> {item.question},{" "}
+                  <strong>Your Answer:</strong> {item.answer},{" "}
+                  <strong>Correct:</strong> {item.isCorrect ? "Yes" : "No"}
+                </li>
+              ))}
+            </ul>
+            <h2>
+              You scored:{" "}
+              {userAnswers.filter((answer) => answer.isCorrect).length} /{" "}
+              {exercises.length}
+            </h2>
+          </>
+        ) : (
+          <p>No exercises available</p>
+        )}
+      </div>
+    </Layout>
   );
 };
 
