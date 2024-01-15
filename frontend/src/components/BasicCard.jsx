@@ -28,17 +28,14 @@ export default function BasicCard({
   onDelete,
 }) {
   const [openConfirmation, setOpenConfirmation] = useState(false);
-  const [wordIdToDelete, setWordIdToDelete] = useState(null);
 
   const handleDeleteRow = () => {
-    setWordIdToDelete(languageId);
     setOpenConfirmation(true);
   };
 
   const handleConfirmation = () => {
     setOpenConfirmation(false);
 
-    setWordIdToDelete(null);
     onDelete(languageId);
   };
 

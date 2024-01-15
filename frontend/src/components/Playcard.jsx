@@ -26,7 +26,7 @@ export default function PlayCard({ languageId, languageName, wordCount }) {
         </Typography>
       </CardContent>
       <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Link to={`/play/${languageName}`}>
+        <Link to={`/${languageName}`}>
           <Button size="medium">Play</Button>
         </Link>
       </CardActions>

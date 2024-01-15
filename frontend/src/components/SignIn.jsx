@@ -43,8 +43,8 @@ function SignIn() {
       try {
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/api/users/login`,
-          user,
-          { withCredentials: true }
+          user
+          // { withCredentials: true }
         );
 
         if (response.status === 200) {

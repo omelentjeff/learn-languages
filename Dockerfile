@@ -1,6 +1,9 @@
 
 ## STAGE 1
 
+
+
+
 # Use a lightweight Node.js image as a base for building the frontend
 FROM node:20.9.0-alpine as frontend-builder
 

@@ -12,16 +12,11 @@ const cookieParser = require("cookie-parser");
 const config = require("./config");
 const connection = mysql.createPool(config);
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  next();
-});
-
 app.use(express.json());
 
 const corsOptions = {
-  origin: "http://localhost:5173",
-  credentials: true,
+  origin: "*",
+  // credentials: true,
 };
 
 app.use(cors(corsOptions));
@@ -32,7 +27,7 @@ app.use("/api/languages", languageRouter);
 app.use("/api/users", userRouter);
 app.use("/api/categories", categoryRouter);
 
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
+app.use(express.static("./frontend/dist"));
 
 const server = app
   .listen(port, () => {

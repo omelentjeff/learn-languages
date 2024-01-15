@@ -1,33 +1,92 @@
-###
-get http://localhost:8080/api/languages/english
+// USER REQUESTS
+
+get http://localhost:8080/api/users
 
 ###
-get http://localhost:8080/api/languages/swedish
-
-
-###
-POST http://localhost:8080/api/languages/english
+POST http://localhost:8080/api/users/signup
 Content-Type: application/json
 
-{ "english": "cat", "finnish": "kissa" }
+{ "username": "anna", "password": "password" }
 
 ###
-POST http://localhost:8080/api/languages/swedish
+POST http://localhost:8080/api/users/login
 Content-Type: application/json
 
-{ "swedish": "hund", "finnish": "koira" }
+{ "username": "otto", "password": "password" }
+
+
+ // WORD REQUESTS
+###
+get http://localhost:8080/api/words
+
+###
+get http://localhost:8080/api/words/english
+
+###
+PUT http://localhost:8080/api/words/12
+Content-Type: application/json
+
+{"foreign_word": "eng", "finnish_word": "fin", "category_id": 124 }
+
+###
+POST http://localhost:8080/api/words/english
+Content-Type: application/json
+
+{ "foreign_word": "apple", "finnish_word": "omena", "category": "fruit" }
+
+###
+delete http://localhost:8080/api/words/16
+
+###
+POST http://localhost:8080/api/words
+Content-Type: application/json
+
+{"language": "english", "categories": [10, 13]}
 
 
 // VALIDATION REQUESTS
 
-###
-POST http://localhost:8080/api/languages/english/validate/1
+### 
+POST http://localhost:8080/api/words/validate/10
 Content-Type: application/json
 
-{ "finnish": "KOIRA" }
+{ "language": "english", "finnish": "karhu" }
 
 ###
-POST http://localhost:8080/api/languages/swedish/validate/1
+POST http://localhost:8080/api/words/validate/8
 Content-Type: application/json
 
-{ "finnish": "koira" }
+{ "language": "swedish", "finnish_word": "kissa" }
+
+
+// LANGUAGE REQUESTS
+
+###
+get http://localhost:8080/api/languages/
+
+###
+get http://localhost:8080/api/languages/english
+
+###
+post http://localhost:8080/api/languages/
+Content-Type: application/json
+
+{"language": "norja"}
+
+###
+delete http://localhost:8080/api/languages/84
+
+
+// CATEGORY REQUESTS
+
+###
+get http://localhost:8080/api/categories
+
+###
+POST http://localhost:8080/api/categories
+Content-Type: application/json
+
+{"category": "testi"}
+
+###
+get http://localhost:8080/api/categories/english

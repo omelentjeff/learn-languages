@@ -122,7 +122,6 @@ const ExcercisePage = () => {
   return (
     <Layout>
       <div style={{ textAlign: "center" }}>
-        <h1>Exercise Completed</h1>
         <h2>Results:</h2>
         {exercises.length > 0 ? (
           <>
