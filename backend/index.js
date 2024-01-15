@@ -25,13 +25,14 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
 app.use(cookieParser());
 app.use("/api/words", wordRouter);
 app.use("/api/languages", languageRouter);
 app.use("/api/users", userRouter);
 app.use("/api/categories", categoryRouter);
 
-// app.use(express.static(path.join(__dirname, "../frontend/dist")));
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 const server = app
   .listen(port, () => {
