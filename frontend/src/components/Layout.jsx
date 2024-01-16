@@ -60,16 +60,21 @@ export default function Layout({ children }) {
           >
             Learn Languages!
           </Typography>
-          <IconButton color="inherit">
-            <Hidden smDown>
-              <Typography
-                variant="body1"
-                color="inherit"
-                sx={{ marginRight: 1 }}
-              >
-                Log Out
-              </Typography>
-            </Hidden>
+          <IconButton color="white">
+            <Link to={`/`}>
+              <Hidden smDown>
+                <Typography
+                  variant="body1"
+                  color="inherit"
+                  sx={{
+                    marginRight: 1,
+                    color: "white",
+                  }}
+                >
+                  Log Out
+                </Typography>
+              </Hidden>
+            </Link>
             <Badge color="secondary">
               <LogoutIcon />
             </Badge>
