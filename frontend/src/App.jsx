@@ -62,17 +62,17 @@ function App() {
         justifyContent="flex-end"
         style={{ position: "fixed", bottom: 16, right: 16 }}
       >
-        <Grid item>
+        {/* <Grid item>
           <Typography color={darkMode ? "textSecondary" : "textPrimary"}>
             Dark Mode
           </Typography>
-        </Grid>
+        </Grid> */}
         <Grid item>
-          <IconButton sx={{ ml: 1 }} onClick={toggleDarkMode} color="inherit">
+          <IconButton sx={{ ml: 1 }} color="inherit">
             {theme.palette.mode === "dark" ? (
-              <Brightness7Icon />
+              <Brightness7Icon onClick={() => toggleDarkMode()} />
             ) : (
-              <Brightness4Icon />
+              <Brightness4Icon onClick={() => toggleDarkMode()} />
             )}
           </IconButton>
         </Grid>
