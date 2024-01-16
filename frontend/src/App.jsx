@@ -12,15 +12,12 @@ import CssBaseline from "@mui/material/CssBaseline";
 import CategorySelector from "./components/CategorySelector";
 
 import Switch from "@mui/material/Switch";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import IconButton from "@mui/material/IconButton";
 
 // TODO: AUTH, PROTECTED ROUTES, LOGOUT, PICK WHICH LANGUAGE TO PLAY, MOBILE FRIENDLY, BETTER UI
 
@@ -71,11 +68,13 @@ function App() {
           </Typography>
         </Grid>
         <Grid item>
-          <Switch
-            checked={darkMode}
-            onChange={toggleDarkMode}
-            color="primary"
-          />
+          <IconButton sx={{ ml: 1 }} onClick={toggleDarkMode} color="inherit">
+            {theme.palette.mode === "dark" ? (
+              <Brightness7Icon />
+            ) : (
+              <Brightness4Icon />
+            )}
+          </IconButton>
         </Grid>
       </Grid>
     </ThemeProvider>
