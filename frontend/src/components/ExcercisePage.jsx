@@ -19,7 +19,8 @@ const ExcercisePage = () => {
         {
           language: languageName,
           categories: selectedCategories,
-        }
+        },
+        { withCredentials: true }
       );
 
       setExercises(response.data);

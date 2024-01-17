@@ -52,7 +52,8 @@ const CustomTable = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/words/${languageName}`
+        `${import.meta.env.VITE_API_URL}/api/words/${languageName}`,
+        { withCredentials: true }
       );
       setData(response.data);
     } catch (error) {
@@ -63,7 +64,8 @@ const CustomTable = () => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/categories`
+        `${import.meta.env.VITE_API_URL}/api/categories`,
+        { withCredentials: true }
       );
       setCategories(response.data);
       console.log("Categories fetch: ", response.data);
@@ -108,7 +110,8 @@ const CustomTable = () => {
 
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/words/${editedData.word_id}`,
-        editedFields
+        editedFields,
+        { withCredentials: true }
       );
 
       console.log("Response from server:", response);
@@ -146,7 +149,8 @@ const CustomTable = () => {
 
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/words/${languageName}`,
-        newExercise
+        newExercise,
+        { withCredentials: true }
       );
 
       console.log("New word pair added:", response.data);
@@ -219,7 +223,8 @@ const CustomTable = () => {
   const handleConfirmDelete = async () => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/words/${deleteItemId}`
+        `${import.meta.env.VITE_API_URL}/api/words/${deleteItemId}`,
+        { withCredentials: true }
       );
       setOpenDeleteDialog(false);
       fetchData();
@@ -247,7 +252,8 @@ const CustomTable = () => {
 
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/categories/`,
-        { category: newCategory }
+        { category: newCategory },
+        { withCredentials: true }
       );
 
       console.log("New word pair added:", response.data);

@@ -14,6 +14,7 @@ const AddLanguageForm = ({ open, handleClose, addLanguageToState }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/languages`,
+        { withCredentials: true },
         language
       );
 

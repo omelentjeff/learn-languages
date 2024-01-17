@@ -16,7 +16,8 @@ export default function CheckboxList({ onSelectCategories }) {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/categories/${languageName}`
+        `${import.meta.env.VITE_API_URL}/api/categories/${languageName}`,
+        { withCredentials: true }
       );
       console.log(response.data);
       setCategoryData(response.data);

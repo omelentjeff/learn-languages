@@ -70,7 +70,8 @@ export default function TeacherDashboard() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/languages`
+        `${import.meta.env.VITE_API_URL}/api/languages`,
+        { withCredentials: true }
       );
       setCardsData(response.data);
     } catch (error) {
@@ -89,7 +90,8 @@ export default function TeacherDashboard() {
   const handleDeleteLanguage = async (languageId) => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/languages/${languageId}`
+        `${import.meta.env.VITE_API_URL}/api/languages/${languageId}`,
+        { withCredentials: true }
       );
 
       setCardsData((prevData) =>
@@ -106,11 +108,12 @@ export default function TeacherDashboard() {
 
   const handleConfirmNewLanguage = async () => {
     try {
-      console.log("Adding new clanguage...", newLanguage);
+      console.log("Adding new language...", newLanguage);
 
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/languages/`,
-        { language: newLanguage }
+        { language: newLanguage },
+        { withCredentials: true }
       );
 
       console.log("New language added:", response.data);

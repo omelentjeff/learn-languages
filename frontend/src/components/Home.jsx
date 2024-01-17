@@ -34,7 +34,8 @@ export default function Home() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/languages`
+        `${import.meta.env.VITE_API_URL}/api/languages`,
+        { withCredentials: true }
       );
       setCardsData(response.data);
     } catch (error) {
