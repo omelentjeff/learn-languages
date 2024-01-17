@@ -11,6 +11,8 @@ import { Link } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import HomeIcon from "@mui/icons-material/Home";
 import Hidden from "@mui/material/Hidden";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const drawerWidth = 240;
 
@@ -33,6 +35,22 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function Layout({ children }) {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/logout`,
+        {},
+        { withCredentials: true }
+      );
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+
+    navigate("/");
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -60,21 +78,19 @@ export default function Layout({ children }) {
           >
             Learn Languages!
           </Typography>
-          <IconButton color="white">
-            <Link to={`/`}>
-              <Hidden smDown>
-                <Typography
-                  variant="body1"
-                  color="inherit"
-                  sx={{
-                    marginRight: 1,
-                    color: "white",
-                  }}
-                >
-                  Log Out
-                </Typography>
-              </Hidden>
-            </Link>
+          <IconButton color="white" onClick={handleLogout}>
+            <Hidden smDown>
+              <Typography
+                variant="body1"
+                color="inherit"
+                sx={{
+                  marginRight: 1,
+                  color: "white",
+                }}
+              >
+                Log Out
+              </Typography>
+            </Hidden>
             <Badge color="secondary">
               <LogoutIcon />
             </Badge>
