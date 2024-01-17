@@ -4,6 +4,7 @@ const userRouter = require("./routes/userRouter");
 const languageRouter = require("./routes/languageRouter");
 const categoryRouter = require("./routes/categoryRouter");
 const authenticate = require("./middleware/authenticate");
+const authRouter = require("./routes/authRouter");
 const port = 8080;
 const app = express();
 const path = require("path");
@@ -16,8 +17,8 @@ const connection = mysql.createPool(config);
 app.use(express.json());
 
 const corsOptions = {
-  origin: "*",
-  // credentials: true,
+  origin: "http://localhost:5175",
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
@@ -27,6 +28,7 @@ app.use("/api/words", wordRouter);
 app.use("/api/languages", languageRouter);
 app.use("/api/users", userRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/auth", authenticate, authRouter);
 
 app.use(express.static("./frontend/dist"));
 app.get("*", (req, res) => {
