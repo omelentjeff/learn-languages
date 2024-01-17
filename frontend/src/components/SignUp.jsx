@@ -18,6 +18,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 function Copyright(props) {
   return (
@@ -80,16 +81,22 @@ export default function SignUp() {
         setLoading(true);
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/api/users/signup`,
-          user
+          user,
+          { withCredentials: true }
         );
 
-        if (response.status === 201 && response.data.role === "student") {
-          navigate("/home");
-        } else if (
-          response.status === 201 &&
-          response.data.role === "teacher"
-        ) {
-          navigate("/teacher");
+        console.log("jwt:", response.data.token);
+        console.log("Response Headers:", response.headers);
+
+        if (response.status === 200) {
+          const decodedToken = jwtDecode(response.data.token);
+          const userRole = decodedToken.role;
+
+          if (userRole === "teacher") {
+            navigate("/teacher");
+          } else {
+            navigate("/home");
+          }
         } else {
           setErrorMessage("Signup failed. Please check your credentials.");
         }
