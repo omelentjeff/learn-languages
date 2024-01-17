@@ -28,14 +28,15 @@ userRouter.post("/signup", async (req, res) => {
       );
 
       const addedUser = await database.findUserByUsername(req.body.username);
-      const token = createToken(newUser);
+      const { user_id, username, role } = addedUser;
+      const token = createToken(addedUser);
 
       res.cookie("jwt", token, {
         httpOnly: true,
         sameSite: "Strict",
       });
 
-      res.status(201).json({ user: addedUser, token: token });
+      res.status(200).json({ user_id, username, role, token: token });
     }
   } catch (err) {
     res.status(500).json({ msg: "Internal server error" });
@@ -63,7 +64,7 @@ userRouter.post("/login", async (req, res) => {
           sameSite: "Strict",
         });
 
-        res.status(200).json({ user_id, username, role, cookie: token });
+        res.status(200).json({ user_id, username, role, token: token });
       } else {
         res.status(401).json("Incorrect password");
       }
