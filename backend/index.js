@@ -3,6 +3,7 @@ const wordRouter = require("./routes/wordRouter");
 const userRouter = require("./routes/userRouter");
 const languageRouter = require("./routes/languageRouter");
 const categoryRouter = require("./routes/categoryRouter");
+const authenticate = require("./middleware/authenticate");
 const port = 8080;
 const app = express();
 const path = require("path");
