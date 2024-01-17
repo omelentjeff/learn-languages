@@ -28,10 +28,14 @@ userRouter.post("/signup", async (req, res) => {
       );
 
       const addedUser = await database.findUserByUsername(req.body.username);
-      // const token = createToken(addedUser.user_id);
-      // res.cookie("jwt", token, { httpOnly: true });
-      // res.cookie("role", role);
-      res.status(201).json(addedUser);
+      const token = createToken(newUser);
+
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        sameSite: "Strict",
+      });
+
+      res.status(201).json({ user: addedUser, token: token });
     }
   } catch (err) {
     res.status(500).json({ msg: "Internal server error" });
@@ -52,10 +56,13 @@ userRouter.post("/login", async (req, res) => {
 
       if (isPasswordMatch) {
         const { user_id, username, role } = foundUser;
-        const token = createToken(user_id);
-        // console.log("Generated Token:", token);
-        res.cookie("jwt", token, { httpOnly: true });
-        res.cookie("role", role);
+        const token = createToken(foundUser);
+
+        res.cookie("jwt", token, {
+          httpOnly: true,
+          sameSite: "Strict",
+        });
+
         res.status(200).json({ user_id, username, role, cookie: token });
       } else {
         res.status(401).json("Incorrect password");
