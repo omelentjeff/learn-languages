@@ -16,6 +16,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -43,18 +44,17 @@ function SignIn() {
       try {
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/api/users/login`,
-          user
-          // { withCredentials: true }
+          user,
+          { withCredentials: true }
         );
 
+        console.log("Token received:", response.data.token);
+
         if (response.status === 200) {
-          // Simulating a login request with a delay
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          const decodedToken = jwtDecode(response.data.token);
+          const userRole = decodedToken.role;
 
-          console.log(response.data);
-          console.log("Response Headers:", response.headers);
-
-          if (response.data.role === "teacher") {
+          if (userRole === "teacher") {
             navigate("/teacher");
           } else {
             navigate("/home");
@@ -63,8 +63,15 @@ function SignIn() {
           setErrorMessage("Login failed. Please check your credentials.");
         }
       } catch (error) {
+        console.error("Login error:", error);
+        if (error.response && error.response.data) {
+          setErrorMessage(error.response.data);
+        } else {
+          setErrorMessage("An error occurred during login");
+        }
+
         setErrorMessage("Invalid username or password");
-        // Clear input fields on error
+
         setFormData({
           username: "",
           password: "",
@@ -79,7 +86,6 @@ function SignIn() {
   };
 
   const handleChange = (event) => {
-    // Update form data as the user types
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
