@@ -9,6 +9,7 @@ import EditLanguage from "./components/EditLanguage";
 import RoleProtection from "./components/RoleProtection";
 import Unauthorized from "./components/Unauthorized";
 import NotFound from "./components/NotFound";
+import Layout from "./components/Layout";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -56,18 +57,54 @@ function App() {
         <Routes>
           <Route path="/signup" element={<SignUp />} />
           <Route path="/" element={<SignIn />} />
-          <Route path="/home" element={<HomePageProtected />} />
-          <Route path="/teacher" element={<TeacherDashboardProtected />} />
+          <Route
+            path="/home"
+            element={
+              <Layout>
+                <HomePageProtected />
+              </Layout>
+            }
+          />
+          <Route
+            path="/teacher"
+            element={
+              <Layout>
+                <TeacherDashboardProtected />
+              </Layout>
+            }
+          />
           <Route
             path="/edit/:languageName"
-            element={<EditLanguageProtected language />}
+            element={
+              <Layout>
+                <EditLanguageProtected language />
+              </Layout>
+            }
           />
           <Route
             path="/:languageName"
-            element={<CategorySelectorProtected language />}
+            element={
+              <Layout>
+                <CategorySelectorProtected language />
+              </Layout>
+            }
           />
-          <Route path="/play/:language" element={<ExercisePageProtected />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route
+            path="/play/:language"
+            element={
+              <Layout>
+                <ExercisePageProtected />
+              </Layout>
+            }
+          />
+          <Route
+            path="/unauthorized"
+            element={
+              <Layout>
+                <Unauthorized />
+              </Layout>
+            }
+          />
           <Route path="*" element={<NotFound />} />{" "}
         </Routes>
       </Router>
