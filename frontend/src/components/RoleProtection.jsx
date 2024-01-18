@@ -5,6 +5,7 @@ import axios from "axios";
 function RoleProtection(WrappedComponent, allowedRoles) {
   return function (props) {
     const [userRole, setUserRole] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isChecking, setIsChecking] = useState(true);
 
     const fetchRole = async () => {
@@ -14,11 +15,12 @@ function RoleProtection(WrappedComponent, allowedRoles) {
           { withCredentials: true }
         );
         setUserRole(response.data.role);
+        setIsAuthenticated(true);
         setIsChecking(false);
       } catch (err) {
-        setUserRole(null);
+        setIsAuthenticated(false);
         setIsChecking(false);
-        console.error("Unauthorized");
+        console.error("Error or unauthorized", err);
       }
     };
 
@@ -30,7 +32,11 @@ function RoleProtection(WrappedComponent, allowedRoles) {
       return <div>Loading...</div>;
     }
 
-    if (!userRole || !allowedRoles.includes(userRole)) {
+    if (!isAuthenticated) {
+      return <Navigate to="/" />;
+    }
+
+    if (!allowedRoles.includes(userRole)) {
       return <Navigate to="/unauthorized" />;
     }
 
