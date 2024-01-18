@@ -10,6 +10,8 @@ import axios from "axios";
 
 export default function CheckboxList({ onSelectCategories }) {
   const [checked, setChecked] = useState([]);
+  const [checkboxStates, setCheckboxStates] = useState({});
+  const [isFirstInteraction, setIsFirstInteraction] = useState(true);
   const [categoryData, setCategoryData] = useState([]);
   const { languageName } = useParams();
 
@@ -19,8 +21,12 @@ export default function CheckboxList({ onSelectCategories }) {
         `${import.meta.env.VITE_API_URL}/api/categories/${languageName}`,
         { withCredentials: true }
       );
-      console.log(response.data);
       setCategoryData(response.data);
+
+      const allCategoryIds = response.data.map(
+        (category) => category.category_id
+      );
+      setChecked(allCategoryIds);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -31,17 +37,23 @@ export default function CheckboxList({ onSelectCategories }) {
   }, []);
 
   const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
+    setCheckboxStates((prev) => ({ ...prev, [value]: !prev[value] }));
 
-    if (currentIndex === -1) {
-      newChecked.push(value);
+    if (isFirstInteraction) {
+      setChecked([value]);
+      setIsFirstInteraction(false);
     } else {
-      newChecked.splice(currentIndex, 1);
+      const currentIndex = checked.indexOf(value);
+      let newChecked = [...checked];
+      if (currentIndex === -1) {
+        newChecked.push(value);
+      } else {
+        newChecked = newChecked.filter((id) => id !== value);
+      }
+      setChecked(newChecked);
     }
 
-    setChecked(newChecked);
-    onSelectCategories(newChecked);
+    onSelectCategories(isFirstInteraction ? [value] : checked);
   };
 
   useEffect(() => {
@@ -63,7 +75,11 @@ export default function CheckboxList({ onSelectCategories }) {
               <ListItemIcon>
                 <Checkbox
                   edge="start"
-                  checked={checked.indexOf(category.category_id) !== -1}
+                  checked={
+                    isFirstInteraction
+                      ? false
+                      : checkboxStates[category.category_id] || false
+                  }
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ "aria-labelledby": labelId }}
