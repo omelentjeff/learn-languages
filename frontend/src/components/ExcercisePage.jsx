@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Layout from "./Layout";
 
-const ExcercisePage = () => {
+const ExercisePage = () => {
   const { state } = useLocation();
   const { languageName, selectedCategories } = state;
   const [exercises, setExercises] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [isAnswerCorrect, setIsAnswerCorrect] = useState(null);
   const [userAnswers, setUserAnswers] = useState([]);
   const [exerciseCompleted, setExerciseCompleted] = useState(false);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -22,21 +22,26 @@ const ExcercisePage = () => {
         },
         { withCredentials: true }
       );
-
       setExercises(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const handleAnswerSubmit = (answer) => {
+  const handleBackHome = () => {
+    navigate("/home");
+  };
+
+  const handlePlayAgain = () => {
+    navigate(`/${languageName}`);
+  };
+
+  const handleAnswerSubmit = (answer, form) => {
     const currentExercise = exercises[currentQuestionIndex];
 
-    // Validate the answer
     const isCorrect =
       answer.toLowerCase() === currentExercise.finnish_word.toLowerCase();
 
-    // Store the user's answer
     setUserAnswers((prevAnswers) => [
       ...prevAnswers,
       {
@@ -46,18 +51,12 @@ const ExcercisePage = () => {
       },
     ]);
 
-    setIsAnswerCorrect(isCorrect);
-
-    // Move to the next question after a delay (for demonstration purposes)
-    setTimeout(() => {
-      setIsAnswerCorrect(null);
-      if (currentQuestionIndex < exercises.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-      } else {
-        // Handle the end of the exercise
-        setExerciseCompleted(true);
-      }
-    }, 1000); // Adjust the delay as needed
+    form.reset();
+    if (currentQuestionIndex < exercises.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      setExerciseCompleted(true);
+    }
   };
 
   useEffect(() => {
@@ -65,48 +64,50 @@ const ExcercisePage = () => {
   }, []);
 
   if (!exerciseCompleted && currentQuestionIndex < exercises.length) {
-    // Display the question
     const currentExercise = exercises[currentQuestionIndex];
     return (
       <Layout>
-        <div style={{ textAlign: "center" }}>
-          {isAnswerCorrect !== null && (
-            <div style={{ color: isAnswerCorrect ? "green" : "red" }}>
-              {isAnswerCorrect ? "Correct!" : "Incorrect."}
-            </div>
-          )}
+        <div style={{ textAlign: "center", padding: "20px" }}>
+          <div style={{ maxWidth: "500px", margin: "auto" }}>
+            <h2 style={{ marginBottom: "20px" }}>
+              Question {currentQuestionIndex + 1}
+            </h2>
+            <p style={{ fontSize: "1.2em" }}>{currentExercise.foreign_word}</p>
 
-          <div>
-            <h2>Question {currentQuestionIndex + 1}</h2>
-            <p>{currentExercise.foreign_word}</p>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 const userAnswer = e.target.answer.value;
-                handleAnswerSubmit(userAnswer);
+                handleAnswerSubmit(userAnswer, e.target);
               }}
-              style={{ maxWidth: "300px", margin: "auto" }}
+              style={{ marginTop: "20px" }}
             >
-              <label style={{ display: "block", marginBottom: "10px" }}>
-                Your Answer:
+              <div style={{ marginBottom: "15px" }}>
                 <input
                   type="text"
                   name="answer"
                   style={{
                     width: "100%",
-                    padding: "8px",
+                    padding: "12px 20px",
+                    margin: "8px 0",
+                    display: "inline-block",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
                     boxSizing: "border-box",
+                    fontSize: "1em",
                   }}
                 />
-              </label>
+              </div>
               <button
                 type="submit"
                 style={{
-                  background: "#4CAF50",
+                  width: "100%",
+                  backgroundColor: "#4CAF50",
                   color: "white",
-                  padding: "10px 15px",
+                  padding: "14px 20px",
+                  margin: "8px 0",
                   border: "none",
-                  borderRadius: "5px",
+                  borderRadius: "4px",
                   cursor: "pointer",
                 }}
               >
@@ -119,7 +120,6 @@ const ExcercisePage = () => {
     );
   }
 
-  // Display the list of questions and answers at the end
   return (
     <Layout>
       <div style={{ textAlign: "center" }}>
@@ -145,8 +145,14 @@ const ExcercisePage = () => {
           <p>No exercises available</p>
         )}
       </div>
+      <div style={{ marginTop: "20px" }}>
+        <button onClick={handleBackHome} style={{ marginRight: "10px" }}>
+          Back Home
+        </button>
+        <button onClick={handlePlayAgain}>Play Again</button>
+      </div>
     </Layout>
   );
 };
 
-export default ExcercisePage;
+export default ExercisePage;
