@@ -280,14 +280,23 @@ const CustomTable = () => {
 
   return (
     <div>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleAddNewClick}
-        style={{ marginBottom: 16 }}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "20px",
+          marginTop: "20px",
+        }}
       >
-        Add new word pair
-      </Button>
+        <Button
+          style={{ backgroundColor: "orangered" }}
+          variant="contained"
+          color="primary"
+          onClick={handleAddNewClick}
+        >
+          Add new word pair
+        </Button>
+      </div>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
