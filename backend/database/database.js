@@ -199,11 +199,15 @@ module.exports = {
     const values = [language];
 
     return new Promise((resolve, reject) => {
-      pool.query(sql, values, (err, result) => {
+      pool.query(sql, values, (err, results) => {
         if (err) {
-          reject(`Language: (${language}) not found`);
+          reject(err);
         } else {
-          resolve(result);
+          if (results.length === 0) {
+            reject(new Error(`Language: (${language}) not found`));
+          } else {
+            resolve(results[0]);
+          }
         }
       });
     });
