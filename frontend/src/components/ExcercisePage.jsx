@@ -129,7 +129,8 @@ const ExercisePage = () => {
             <ul>
               {userAnswers.map((item, index) => (
                 <li key={index} style={{ listStyle: "none" }}>
-                  <strong>Question:</strong> {item.question},{" "}
+                  <strong>{index}.</strong> {item.question},{" "}
+                  <strong>Your Answer:</strong> {item.answer},{" "}
                   <strong>Your Answer:</strong> {item.answer},{" "}
                   <strong>{item.isCorrect ? "Correct" : "Wrong"}</strong>
                 </li>
@@ -145,11 +146,45 @@ const ExercisePage = () => {
           <p>No exercises available</p>
         )}
       </div>
-      <div style={{ marginTop: "20px" }}>
-        <button onClick={handleBackHome} style={{ marginRight: "10px" }}>
+      <div
+        style={{
+          marginTop: "20px",
+          alignItems: "center",
+          justifyContent: "center",
+          display: "flex",
+          gap: "10px",
+        }}
+      >
+        <button
+          onClick={handleBackHome}
+          style={{
+            maxWidth: "100%",
+            backgroundColor: "blue",
+            color: "white",
+            padding: "14px 20px",
+            margin: "8px 0",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
           Back Home
         </button>
-        <button onClick={handlePlayAgain}>Play Again</button>
+        <button
+          onClick={handlePlayAgain}
+          style={{
+            maxWidth: "100%",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            padding: "14px 20px",
+            margin: "8px 0",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Play Again
+        </button>
       </div>
     </Layout>
   );
