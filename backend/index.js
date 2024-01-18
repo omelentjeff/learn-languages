@@ -29,13 +29,14 @@ app.use("/api/languages", authenticate, languageRouter);
 app.use("/api/users", userRouter);
 app.use("/api/categories", authenticate, categoryRouter);
 app.use("/api/auth", authenticate, authRouter);
-app.use("*", (req, res) => {
-  res.status(404).json({ message: "API endpoint not found" });
-});
 
 app.use(express.static("./frontend/dist"));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./frontend/dist/index.html"));
+});
+
+app.use("*", (req, res) => {
+  res.status(404).json({ message: "API endpoint not found" });
 });
 
 const server = app
