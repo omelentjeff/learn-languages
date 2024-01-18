@@ -26,11 +26,11 @@ import IconButton from "@mui/material/IconButton";
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
-  const [modeText, setModeText] = useState(["dark", "light"]);
+  const [modeText, setModeText] = useState("dark");
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
-    setModeText(!modeText);
+    setModeText(darkMode ? "light" : "dark");
   };
 
   const theme = createTheme({
