@@ -61,7 +61,10 @@ const CategorySelector = () => {
           flexDirection: "column",
         }}
       >
-        <h2>Choose the categories you want to practice</h2>
+        <h2>
+          Choose the categories you want to practice (Leave empty if you want to
+          practice all)
+        </h2>
         <CheckboxList onSelectCategories={handleSelectCategories} />
         <Button color="primary" onClick={handleStartClick}>
           START
