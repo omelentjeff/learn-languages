@@ -3,6 +3,7 @@ const express = require("express");
 const userRouter = express.Router();
 const bcrypt = require("bcrypt");
 const { createToken } = require("../utils/jwt");
+const authenticate = require("../middleware/authenticate");
 
 userRouter.get("/", async (req, res) => {
   try {
@@ -71,6 +72,14 @@ userRouter.post("/login", async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ msg: err });
+  }
+});
+
+userRouter.get("/role", authenticate, (req, res) => {
+  if (req.user) {
+    return res.status(200).json({ role: req.user.role });
+  } else {
+    return res.status(403).send("User role not found");
   }
 });
 
