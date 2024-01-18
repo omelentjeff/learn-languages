@@ -6,6 +6,7 @@ const authenticate = (req, res, next) => {
   if (token) {
     jwt.verify(token, secret, (err, decodedToken) => {
       if (err) {
+        console.error("JWT Verification Error:", err);
         res.status(401).json({ message: "Unauthorized" });
       } else {
         req.user = decodedToken;

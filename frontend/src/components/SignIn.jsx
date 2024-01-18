@@ -48,8 +48,6 @@ function SignIn() {
           { withCredentials: true }
         );
 
-        console.log("Token received:", response.data.token);
-
         if (response.status === 200) {
           const decodedToken = jwtDecode(response.data.token);
           const userRole = decodedToken.role;
