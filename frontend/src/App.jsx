@@ -23,9 +23,11 @@ import IconButton from "@mui/material/IconButton";
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
+  const [modeText, setModeText] = useState(["dark", "light"]);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
+    setModeText(!modeText);
   };
 
   const theme = createTheme({
@@ -56,24 +58,24 @@ function App() {
       </Router>
 
       <Grid
-        component="label"
         container
         alignItems="center"
         justifyContent="flex-end"
-        style={{ position: "fixed", bottom: 16, right: 16 }}
+        style={{
+          position: "fixed",
+          bottom: 16,
+          right: 16,
+          maxWidth: "fit-content",
+        }}
       >
-        {/* <Grid item>
-          <Typography color={darkMode ? "textSecondary" : "textPrimary"}>
-            Dark Mode
-          </Typography>
-        </Grid> */}
         <Grid item>
-          <IconButton sx={{ ml: 1 }} color="inherit">
-            {theme.palette.mode === "dark" ? (
-              <Brightness7Icon onClick={() => toggleDarkMode()} />
-            ) : (
-              <Brightness4Icon onClick={() => toggleDarkMode()} />
-            )}
+          <Typography color={darkMode ? "textSecondary" : "textPrimary"}>
+            {modeText === "dark" ? "Dark Mode" : "Light Mode"}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <IconButton sx={{ ml: 1 }} color="inherit" onClick={toggleDarkMode}>
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
         </Grid>
       </Grid>
