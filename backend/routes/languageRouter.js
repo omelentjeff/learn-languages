@@ -13,6 +13,20 @@ languageRouter.get("/", async (req, res) => {
   }
 });
 
+languageRouter.get("/:languageName", async (req, res) => {
+  try {
+    const languageName = req.params.languageName;
+    const language = await database.findLanguage(languageName);
+    res.json(language);
+  } catch (err) {
+    if (err.message.includes("not found")) {
+      res.status(404).json({ message: "Language not found" });
+    } else {
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+});
+
 languageRouter.post("/", async (req, res) => {
   try {
     const language = req.body.language;
