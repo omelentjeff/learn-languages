@@ -7,6 +7,8 @@ import ExcercisePage from "./components/ExcercisePage";
 import TeacherDashboard from "./components/TeacherDashboard";
 import EditLanguage from "./components/EditLanguage";
 import RoleProtection from "./components/RoleProtection";
+import Unauthorized from "./components/Unauthorized";
+import NotFound from "./components/NotFound";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -69,6 +71,8 @@ function App() {
             element={<CategorySelector language />}
           />
           <Route path="/play/:language" element={<ExcercisePage />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="*" element={<NotFound />} />{" "}
         </Routes>
       </Router>
 
