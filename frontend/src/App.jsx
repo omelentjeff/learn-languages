@@ -5,7 +5,8 @@ import SignUp from "./components/SignUp";
 import Home from "./components/Home";
 import ExcercisePage from "./components/ExcercisePage";
 import TeacherDashboard from "./components/TeacherDashboard";
-import EditLanguage from "./components/EditLanguage"; //
+import EditLanguage from "./components/EditLanguage";
+import RoleProtection from "./components/RoleProtection";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -36,6 +37,20 @@ function App() {
     },
   });
 
+  const TeacherDashboardProtected = RoleProtection(TeacherDashboard, [
+    "teacher",
+  ]);
+  const EditLanguageProtected = RoleProtection(EditLanguage, ["teacher"]);
+  // const TeacherDashboardWithProtection = RoleProtection(TeacherDashboard, [
+  //   "teacher",
+  // ]);
+  // const TeacherDashboardWithProtection = RoleProtection(TeacherDashboard, [
+  //   "teacher",
+  // ]);
+  // const TeacherDashboardWithProtection = RoleProtection(TeacherDashboard, [
+  //   "teacher",
+  // ]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -44,10 +59,10 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/" element={<SignIn />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/teacher" element={<TeacherDashboard />} />
+          <Route path="/teacher" element={<TeacherDashboardProtected />} />
           <Route
             path="/edit/:languageName"
-            element={<EditLanguage language />}
+            element={<EditLanguageProtected language />}
           />
           <Route
             path="/:languageName"
