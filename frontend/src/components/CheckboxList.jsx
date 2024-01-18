@@ -7,6 +7,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function CheckboxList({ onSelectCategories }) {
   const [checked, setChecked] = useState([]);
@@ -14,6 +15,7 @@ export default function CheckboxList({ onSelectCategories }) {
   const [isFirstInteraction, setIsFirstInteraction] = useState(true);
   const [categoryData, setCategoryData] = useState([]);
   const { languageName } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
     try {
@@ -29,6 +31,8 @@ export default function CheckboxList({ onSelectCategories }) {
       setChecked(allCategoryIds);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,6 +63,10 @@ export default function CheckboxList({ onSelectCategories }) {
   useEffect(() => {
     onSelectCategories(checked);
   }, [onSelectCategories, checked]);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>

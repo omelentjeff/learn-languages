@@ -9,6 +9,7 @@ import Link from "@mui/material/Link";
 import axios from "axios";
 import PlayCard from "./Playcard";
 import Layout from "./Layout";
+import LoadingSpinner from "./LoadingSpinner";
 
 function Copyright(props) {
   return (
@@ -30,6 +31,7 @@ function Copyright(props) {
 
 export default function Home() {
   const [cardsData, setCardsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
     try {
@@ -40,12 +42,18 @@ export default function Home() {
       setCardsData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Layout>

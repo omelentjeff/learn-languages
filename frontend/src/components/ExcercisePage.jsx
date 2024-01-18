@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Layout from "./Layout";
+import LoadingSpinner from "./LoadingSpinner";
 
 const ExercisePage = () => {
   const { state } = useLocation();
@@ -11,6 +12,7 @@ const ExercisePage = () => {
   const [userAnswers, setUserAnswers] = useState([]);
   const [exerciseCompleted, setExerciseCompleted] = useState(false);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
     try {
@@ -25,6 +27,8 @@ const ExercisePage = () => {
       setExercises(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -62,6 +66,10 @@ const ExercisePage = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   if (!exerciseCompleted && currentQuestionIndex < exercises.length) {
     const currentExercise = exercises[currentQuestionIndex];

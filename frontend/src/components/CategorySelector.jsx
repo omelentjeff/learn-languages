@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CheckboxList from "./CheckboxList";
+import LoadingSpinner from "./LoadingSpinner";
 import Button from "@mui/material/Button";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -8,6 +9,8 @@ import axios from "axios";
 
 const CategorySelector = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const navigate = useNavigate();
   const { languageName } = useParams();
 
@@ -41,6 +44,8 @@ const CategorySelector = () => {
       } else {
         console.log("Error checking language existence", err);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -49,6 +54,10 @@ const CategorySelector = () => {
       checkLanguageExists();
     }
   }, [languageName, navigate]);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Layout>

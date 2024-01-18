@@ -19,7 +19,9 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import Layout from "./Layout";
 import axios from "axios";
+import LoadingSpinner from "./LoadingSpinner";
 
 const CustomTable = () => {
   const [editedData, setEditedData] = useState({
@@ -43,6 +45,7 @@ const CustomTable = () => {
   const [categories, setCategories] = useState([]);
   const [addCategoryDialogOpen, setAddCategoryDialogOpen] = useState(false);
   const [newCategory, setNewCategory] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
@@ -58,6 +61,8 @@ const CustomTable = () => {
       setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -270,192 +275,204 @@ const CustomTable = () => {
     setError("");
   };
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
-    <div>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleAddNewClick}
-        style={{ marginBottom: 16 }}
-      >
-        Add new word pair
-      </Button>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>{languageName} word</TableCell>
-              <TableCell>Finnish word</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((item) => (
-              <TableRow key={item.word_id}>
-                <TableCell>{item.word_id}</TableCell>
-                <TableCell>{item.foreign_word}</TableCell>
-                <TableCell>{item.finnish_word}</TableCell>
-                <TableCell>{item.category_name}</TableCell>
-                <TableCell style={{ display: "flex", gap: "1rem" }}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    startIcon={<EditIcon />}
-                    onClick={() => handleEditClick(item)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    startIcon={<DeleteIcon />}
-                    onClick={() => handleDeleteClick(item.word_id)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
+    <Layout>
+      <div>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddNewClick}
+          style={{ marginBottom: 16 }}
+        >
+          Add new word pair
+        </Button>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>{languageName} word</TableCell>
+                <TableCell>Finnish word</TableCell>
+                <TableCell>Category</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {data.map((item) => (
+                <TableRow key={item.word_id}>
+                  <TableCell>{item.word_id}</TableCell>
+                  <TableCell>{item.foreign_word}</TableCell>
+                  <TableCell>{item.finnish_word}</TableCell>
+                  <TableCell>{item.category_name}</TableCell>
+                  <TableCell style={{ display: "flex", gap: "1rem" }}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<EditIcon />}
+                      onClick={() => handleEditClick(item)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      startIcon={<DeleteIcon />}
+                      onClick={() => handleDeleteClick(item.word_id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-      {/* Edit Dialog */}
-      <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
-        <DialogTitle>Edit Item</DialogTitle>
-        <DialogContent>
-          <TextField
-            label={languageName}
-            fullWidth
-            name="foreign_word"
-            value={editedData.foreign_word}
-            onChange={handleInputChange}
-          />
-          <TextField
-            label="Finnish word"
-            fullWidth
-            name="finnish_word"
-            value={editedData.finnish_word}
-            onChange={handleInputChange}
-          />
-          <TextField
-            select
-            label="Category"
-            fullWidth
-            name="category_id"
-            value={editedData.category_id}
-            onChange={handleInputChange}
-          >
-            {categories.map((category) => (
-              <MenuItem key={category.category_id} value={category.category_id}>
-                {category.category_name}
-              </MenuItem>
-            ))}
-          </TextField>
+        {/* Edit Dialog */}
+        <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)}>
+          <DialogTitle>Edit Item</DialogTitle>
+          <DialogContent>
+            <TextField
+              label={languageName}
+              fullWidth
+              name="foreign_word"
+              value={editedData.foreign_word}
+              onChange={handleInputChange}
+            />
+            <TextField
+              label="Finnish word"
+              fullWidth
+              name="finnish_word"
+              value={editedData.finnish_word}
+              onChange={handleInputChange}
+            />
+            <TextField
+              select
+              label="Category"
+              fullWidth
+              name="category_id"
+              value={editedData.category_id}
+              onChange={handleInputChange}
+            >
+              {categories.map((category) => (
+                <MenuItem
+                  key={category.category_id}
+                  value={category.category_id}
+                >
+                  {category.category_name}
+                </MenuItem>
+              ))}
+            </TextField>
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddNewCategory}
-            style={{ marginTop: 16 }}
-          >
-            Add New Category
-          </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddNewCategory}
+              style={{ marginTop: 16 }}
+            >
+              Add New Category
+            </Button>
 
-          {error && <Typography color="error">{error}</Typography>}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenEditDialog(false)}>Cancel</Button>
-          <Button onClick={handleSaveEdit} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <Typography>Are you sure you want to delete this item?</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelDelete}>Cancel</Button>
-          <Button onClick={handleConfirmDelete} color="primary">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+            {error && <Typography color="error">{error}</Typography>}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenEditDialog(false)}>Cancel</Button>
+            <Button onClick={handleSaveEdit} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog open={openDeleteDialog} onClose={handleCancelDelete}>
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogContent>
+            <Typography>Are you sure you want to delete this item?</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelDelete}>Cancel</Button>
+            <Button onClick={handleConfirmDelete} color="primary">
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-      {/* Add Exercise Dialog */}
-      <Dialog open={addExerciseDialogOpen} onClose={handleCancelNew}>
-        <DialogTitle>Add New Word Pair</DialogTitle>
-        <DialogContent>
-          {error && <Typography color="error">{error}</Typography>}
-          <TextField
-            label={languageName + " word"}
-            fullWidth
-            name="foreign_word"
-            value={newExercise.foreign_word}
-            onChange={handleInputChangeAdd}
-          />
-          <TextField
-            label="Finnish Word"
-            fullWidth
-            name="finnish_word"
-            value={newExercise.finnish_word}
-            onChange={handleInputChangeAdd}
-          />
-          <TextField
-            select
-            label="Category"
-            fullWidth
-            name="category_id"
-            value={newExercise.category_id}
-            onChange={handleInputChangeAdd}
-          >
-            {categories.map((category) => (
-              <MenuItem key={category.category_id} value={category.category_id}>
-                {category.category_name}
-              </MenuItem>
-            ))}
-          </TextField>
+        {/* Add Exercise Dialog */}
+        <Dialog open={addExerciseDialogOpen} onClose={handleCancelNew}>
+          <DialogTitle>Add New Word Pair</DialogTitle>
+          <DialogContent>
+            {error && <Typography color="error">{error}</Typography>}
+            <TextField
+              label={languageName + " word"}
+              fullWidth
+              name="foreign_word"
+              value={newExercise.foreign_word}
+              onChange={handleInputChangeAdd}
+            />
+            <TextField
+              label="Finnish Word"
+              fullWidth
+              name="finnish_word"
+              value={newExercise.finnish_word}
+              onChange={handleInputChangeAdd}
+            />
+            <TextField
+              select
+              label="Category"
+              fullWidth
+              name="category_id"
+              value={newExercise.category_id}
+              onChange={handleInputChangeAdd}
+            >
+              {categories.map((category) => (
+                <MenuItem
+                  key={category.category_id}
+                  value={category.category_id}
+                >
+                  {category.category_name}
+                </MenuItem>
+              ))}
+            </TextField>
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddNewCategory}
-            style={{ marginTop: 16 }}
-          >
-            Add New Category
-          </Button>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelNew}>Cancel</Button>
-          <Button onClick={handleConfirmNew} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddNewCategory}
+              style={{ marginTop: 16 }}
+            >
+              Add New Category
+            </Button>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelNew}>Cancel</Button>
+            <Button onClick={handleConfirmNew} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-      <Dialog open={addCategoryDialogOpen} onClose={handleCancelNewCategory}>
-        <DialogTitle>Add New Category</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Category Name"
-            fullWidth
-            name="newCategory"
-            value={newCategory}
-            onChange={handleNewCategoryInputChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelNewCategory}>Cancel</Button>
-          <Button onClick={handleConfirmNewCategory} color="primary">
-            Add Category
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+        <Dialog open={addCategoryDialogOpen} onClose={handleCancelNewCategory}>
+          <DialogTitle>Add New Category</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Category Name"
+              fullWidth
+              name="newCategory"
+              value={newCategory}
+              onChange={handleNewCategoryInputChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelNewCategory}>Cancel</Button>
+            <Button onClick={handleConfirmNewCategory} color="primary">
+              Add Category
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    </Layout>
   );
 };
 
