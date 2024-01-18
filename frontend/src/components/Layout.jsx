@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -36,6 +36,26 @@ const AppBar = styled(MuiAppBar, {
 
 export default function Layout({ children }) {
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/users/role`,
+          { withCredentials: true }
+        );
+        setUserRole(response.data.role);
+      } catch (error) {
+        console.error("Error or unauthorized", error);
+        navigate("/");
+      } finally {
+        // setIsChecking(false);
+      }
+    };
+
+    fetchRole();
+  }, [navigate]);
 
   const handleLogout = async () => {
     try {
@@ -51,6 +71,10 @@ export default function Layout({ children }) {
     navigate("/");
   };
 
+  const isTeacher = userRole === "teacher";
+  const title = isTeacher ? "Teacher Dashboard" : "Learn Languages!";
+  const homeLink = isTeacher ? "/teacher" : "/home";
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -61,7 +85,7 @@ export default function Layout({ children }) {
           }}
         >
           {" "}
-          <Link to={`/home`}>
+          <Link to={homeLink}>
             <IconButton color="white">
               <Hidden smDown></Hidden>
               <Badge color="secondary">
@@ -76,7 +100,7 @@ export default function Layout({ children }) {
             noWrap
             sx={{ flexGrow: 1, textAlign: "center" }}
           >
-            Learn Languages!
+            {title}
           </Typography>
           <IconButton color="white" onClick={handleLogout}>
             <Hidden smDown>
