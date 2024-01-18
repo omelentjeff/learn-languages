@@ -4,7 +4,6 @@ import LoadingSpinner from "./LoadingSpinner";
 import Button from "@mui/material/Button";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import Layout from "./Layout";
 import axios from "axios";
 
 const CategorySelector = () => {
@@ -60,26 +59,24 @@ const CategorySelector = () => {
   }
 
   return (
-    <Layout>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          flexDirection: "column",
-        }}
-      >
-        <h2>
-          Choose the categories you want to practice (Leave empty if you want to
-          practice all)
-        </h2>
-        <CheckboxList onSelectCategories={handleSelectCategories} />
-        <Button color="primary" onClick={handleStartClick}>
-          START
-        </Button>
-      </div>
-    </Layout>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        flexDirection: "column",
+      }}
+    >
+      <h2>
+        Choose the categories you want to practice (Leave empty if you want to
+        practice all)
+      </h2>
+      <CheckboxList onSelectCategories={handleSelectCategories} />
+      <Button color="primary" onClick={handleStartClick}>
+        START
+      </Button>
+    </div>
   );
 };
 

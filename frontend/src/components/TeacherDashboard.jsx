@@ -13,7 +13,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 
-import Layout from "./Layout";
 import LoadingSpinner from "./LoadingSpinner";
 
 import BasicCard from "./BasicCard";
@@ -112,75 +111,73 @@ export default function TeacherDashboard() {
   }
 
   return (
-    <Layout>
-      <Box sx={{ display: "flex" }}>
-        <Box
-          component="main"
+    <Box sx={{ display: "flex" }}>
+      <Box
+        component="main"
+        sx={{
+          backgroundColor: (theme) =>
+            theme.palette.mode === "light"
+              ? theme.palette.grey[100]
+              : theme.palette.grey[900],
+          flexGrow: 1,
+          height: "100vh",
+          overflow: "auto",
+        }}
+      >
+        <Toolbar />
+
+        <Button
+          color="inherit"
+          startIcon={<AddIcon />}
+          onClick={handleAddLanguageClick}
           sx={{
-            backgroundColor: (theme) =>
-              theme.palette.mode === "light"
-                ? theme.palette.grey[100]
-                : theme.palette.grey[900],
-            flexGrow: 1,
-            height: "100vh",
-            overflow: "auto",
+            marginLeft: "auto",
+            marginRight: "auto",
+            marginTop: "1rem",
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          <Toolbar />
+          {" "}
+          Add Language
+        </Button>
 
-          <Button
-            color="inherit"
-            startIcon={<AddIcon />}
-            onClick={handleAddLanguageClick}
-            sx={{
-              marginLeft: "auto",
-              marginRight: "auto",
-              marginTop: "1rem",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            {" "}
-            Add Language
-          </Button>
+        <Dialog open={openAddLanguage} onClose={handleCloseAddLanguage}>
+          <DialogTitle>Add New Language</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Language Name"
+              fullWidth
+              name="newLanguage"
+              value={newLanguage}
+              onChange={handleNewLanguageInputChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseAddLanguage}>Cancel</Button>
+            <Button onClick={handleConfirmNewLanguage} color="primary">
+              Add Language
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-          <Dialog open={openAddLanguage} onClose={handleCloseAddLanguage}>
-            <DialogTitle>Add New Language</DialogTitle>
-            <DialogContent>
-              <TextField
-                label="Language Name"
-                fullWidth
-                name="newLanguage"
-                value={newLanguage}
-                onChange={handleNewLanguageInputChange}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCloseAddLanguage}>Cancel</Button>
-              <Button onClick={handleConfirmNewLanguage} color="primary">
-                Add Language
-              </Button>
-            </DialogActions>
-          </Dialog>
-
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {cardsData.map((language) => (
-                <Grid item xs={4} md={4} lg={3} key={language.language_id}>
-                  <BasicCard
-                    key={language.language_id}
-                    languageId={language.language_id}
-                    languageName={language.language_name}
-                    wordCount={language.wordCount}
-                    onDelete={() => handleDeleteLanguage(language.language_id)}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-            <Copyright sx={{ mt: 20 }} />
-          </Container>
-        </Box>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Grid container spacing={3}>
+            {cardsData.map((language) => (
+              <Grid item xs={4} md={4} lg={3} key={language.language_id}>
+                <BasicCard
+                  key={language.language_id}
+                  languageId={language.language_id}
+                  languageName={language.language_name}
+                  wordCount={language.wordCount}
+                  onDelete={() => handleDeleteLanguage(language.language_id)}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <Copyright sx={{ mt: 20 }} />
+        </Container>
       </Box>
-    </Layout>
+    </Box>
   );
 }

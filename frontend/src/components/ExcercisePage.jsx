@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Layout from "./Layout";
 import LoadingSpinner from "./LoadingSpinner";
 
 const ExercisePage = () => {
@@ -74,62 +73,60 @@ const ExercisePage = () => {
   if (!exerciseCompleted && currentQuestionIndex < exercises.length) {
     const currentExercise = exercises[currentQuestionIndex];
     return (
-      <Layout>
-        <div style={{ textAlign: "center", padding: "20px" }}>
-          <div style={{ maxWidth: "500px", margin: "auto" }}>
-            <h2 style={{ marginBottom: "20px" }}>
-              Question {currentQuestionIndex + 1}
-            </h2>
-            <p style={{ fontSize: "1.2em" }}>{currentExercise.foreign_word}</p>
+      <div style={{ textAlign: "center", padding: "20px" }}>
+        <div style={{ maxWidth: "500px", margin: "auto" }}>
+          <h2 style={{ marginBottom: "20px" }}>
+            Question {currentQuestionIndex + 1}
+          </h2>
+          <p style={{ fontSize: "1.2em" }}>{currentExercise.foreign_word}</p>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const userAnswer = e.target.answer.value;
-                handleAnswerSubmit(userAnswer, e.target);
-              }}
-              style={{ marginTop: "20px" }}
-            >
-              <div style={{ marginBottom: "15px" }}>
-                <input
-                  type="text"
-                  name="answer"
-                  style={{
-                    width: "100%",
-                    padding: "12px 20px",
-                    margin: "8px 0",
-                    display: "inline-block",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                    boxSizing: "border-box",
-                    fontSize: "1em",
-                  }}
-                />
-              </div>
-              <button
-                type="submit"
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const userAnswer = e.target.answer.value;
+              handleAnswerSubmit(userAnswer, e.target);
+            }}
+            style={{ marginTop: "20px" }}
+          >
+            <div style={{ marginBottom: "15px" }}>
+              <input
+                type="text"
+                name="answer"
                 style={{
                   width: "100%",
-                  backgroundColor: "#4CAF50",
-                  color: "white",
-                  padding: "14px 20px",
+                  padding: "12px 20px",
                   margin: "8px 0",
-                  border: "none",
+                  display: "inline-block",
+                  border: "1px solid #ccc",
                   borderRadius: "4px",
-                  cursor: "pointer",
+                  boxSizing: "border-box",
+                  fontSize: "1em",
                 }}
-              >
-                Submit
-              </button>
-            </form>
-          </div>
+              />
+            </div>
+            <button
+              type="submit"
+              style={{
+                width: "100%",
+                backgroundColor: "#4CAF50",
+                color: "white",
+                padding: "14px 20px",
+                margin: "8px 0",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              Submit
+            </button>
+          </form>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   return (
-    <Layout>
+    <>
       <div style={{ textAlign: "center" }}>
         <h2>Results:</h2>
         {exercises.length > 0 ? (
@@ -194,7 +191,7 @@ const ExercisePage = () => {
           Play Again
         </button>
       </div>
-    </Layout>
+    </>
   );
 };
 

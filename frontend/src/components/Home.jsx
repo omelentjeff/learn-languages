@@ -8,7 +8,6 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import axios from "axios";
 import PlayCard from "./Playcard";
-import Layout from "./Layout";
 import LoadingSpinner from "./LoadingSpinner";
 
 function Copyright(props) {
@@ -56,37 +55,35 @@ export default function Home() {
   }
 
   return (
-    <Layout>
-      <Box
-        component="main"
-        sx={{
-          backgroundColor: (theme) =>
-            theme.palette.mode === "light"
-              ? theme.palette.grey[100]
-              : theme.palette.grey[900],
-          flexGrow: 1,
-          height: "100vh",
-          overflow: "auto",
-        }}
-      >
-        <Toolbar />
+    <Box
+      component="main"
+      sx={{
+        backgroundColor: (theme) =>
+          theme.palette.mode === "light"
+            ? theme.palette.grey[100]
+            : theme.palette.grey[900],
+        flexGrow: 1,
+        height: "100vh",
+        overflow: "auto",
+      }}
+    >
+      <Toolbar />
 
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Grid container spacing={3}>
-            {cardsData.map((language) => (
-              <Grid item xs={4} md={4} lg={3} key={language.language_id}>
-                <PlayCard
-                  key={language.language_id}
-                  languageId={language.language_id}
-                  languageName={language.language_name}
-                  wordCount={language.wordCount}
-                />
-              </Grid>
-            ))}
-          </Grid>
-          <Copyright sx={{ mt: 20 }} />
-        </Container>
-      </Box>
-    </Layout>
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Grid container spacing={3}>
+          {cardsData.map((language) => (
+            <Grid item xs={4} md={4} lg={3} key={language.language_id}>
+              <PlayCard
+                key={language.language_id}
+                languageId={language.language_id}
+                languageName={language.language_name}
+                wordCount={language.wordCount}
+              />
+            </Grid>
+          ))}
+        </Grid>
+        <Copyright sx={{ mt: 20 }} />
+      </Container>
+    </Box>
   );
 }
