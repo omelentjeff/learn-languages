@@ -43,15 +43,11 @@ function App() {
     "teacher",
   ]);
   const EditLanguageProtected = RoleProtection(EditLanguage, ["teacher"]);
-  // const TeacherDashboardWithProtection = RoleProtection(TeacherDashboard, [
-  //   "teacher",
-  // ]);
-  // const TeacherDashboardWithProtection = RoleProtection(TeacherDashboard, [
-  //   "teacher",
-  // ]);
-  // const TeacherDashboardWithProtection = RoleProtection(TeacherDashboard, [
-  //   "teacher",
-  // ]);
+  const HomePageProtected = RoleProtection(Home, ["student"]);
+  const CategorySelectorProtected = RoleProtection(CategorySelector, [
+    "student",
+  ]);
+  const ExercisePageProtected = RoleProtection(ExcercisePage, ["student"]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -60,7 +56,7 @@ function App() {
         <Routes>
           <Route path="/signup" element={<SignUp />} />
           <Route path="/" element={<SignIn />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<HomePageProtected />} />
           <Route path="/teacher" element={<TeacherDashboardProtected />} />
           <Route
             path="/edit/:languageName"
@@ -68,9 +64,9 @@ function App() {
           />
           <Route
             path="/:languageName"
-            element={<CategorySelector language />}
+            element={<CategorySelectorProtected language />}
           />
-          <Route path="/play/:language" element={<ExcercisePage />} />
+          <Route path="/play/:language" element={<ExercisePageProtected />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<NotFound />} />{" "}
         </Routes>
