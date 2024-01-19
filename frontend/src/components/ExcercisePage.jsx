@@ -123,6 +123,11 @@ const ExercisePage = () => {
   const handleAnswerSubmit = (answer, form) => {
     const currentExercise = exercises[currentQuestionIndex];
 
+    const question =
+      languageChoice === languageName
+        ? currentExercise.finnish_word
+        : currentExercise.foreign_word;
+
     const correctAnswer =
       languageChoice === languageName
         ? currentExercise.foreign_word.toLowerCase()
@@ -133,7 +138,7 @@ const ExercisePage = () => {
     setUserAnswers((prevAnswers) => [
       ...prevAnswers,
       {
-        question: currentExercise.foreign_word,
+        question: question, // Set to the actual question displayed
         correctAnswer:
           languageChoice === languageName
             ? currentExercise.foreign_word
