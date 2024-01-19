@@ -104,7 +104,7 @@ https://learn-languages-9x4r.onrender.com
 
 ### Locally
 
-1. Clone this repository by clicking the green 'code' button and choose HTTPS
+1. Clone this repository by clicking the blue 'code' button and choose HTTPS
 2. Open your terminal and go to desired folder and enter git clone <copied url>
 3. In your terminal, go to root directory
 4. When in root directory, install dependencies: npm run install-all
