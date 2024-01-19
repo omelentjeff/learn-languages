@@ -18,9 +18,10 @@ import {
   MenuItem,
   useMediaQuery,
   useTheme,
-  IconButton, // New import
-  Menu, // New import
+  IconButton,
+  Menu,
 } from "@mui/material";
+
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -33,6 +34,7 @@ const CustomTable = () => {
     foreign_name: "",
     finnish_name: "",
     category_name: "",
+    category_id: "",
   });
   const { languageName } = useParams();
   const [data, setData] = useState([]);
@@ -50,33 +52,25 @@ const CustomTable = () => {
   const [addCategoryDialogOpen, setAddCategoryDialogOpen] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [menuRowId, setMenuRowId] = useState(null);
 
   const theme = useTheme(); // Use the theme
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const tableContainerStyle = isMobile ? { overflowX: "auto" } : {};
 
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
 
   const handleClickMenu = (event, item) => {
     setAnchorEl(event.currentTarget);
-    setMenuRowId(item.word_id); // Track which row's menu is open
+    setEditedData(item);
   };
 
   // When closing the menu, reset the menu state
   const handleCloseMenu = () => {
     setAnchorEl(null);
-    setMenuRowId(null);
   };
 
   const addWordPairButtonStyle = isMobile
     ? { maxWidth: "200px", margin: "10px auto", display: "block" }
-    : { margin: "10px 0" };
-
-  const buttonStyle = isMobile
-    ? { margin: "8px 0", width: "100%" }
     : { margin: "10px 0" };
 
   useEffect(() => {
@@ -111,13 +105,13 @@ const CustomTable = () => {
     }
   };
 
-  const handleEditClick = () => {
-    const itemToEdit = data.find((item) => item.word_id === menuRowId);
-    if (itemToEdit) {
-      setEditedData(itemToEdit);
-      setOpenEditDialog(true);
+  const handleEditClick = (item = null) => {
+    if (!isMobile && item) {
+      setEditedData(item);
     }
-    handleCloseMenu(); // Close the menu after setting the edit data
+
+    setOpenEditDialog(true);
+    handleCloseMenu();
   };
 
   const handleSaveEdit = async () => {
@@ -131,7 +125,6 @@ const CustomTable = () => {
         return;
       }
 
-      // Extract only the edited fields from the editedData
       const editedFields = {};
       if (editedData.foreign_word !== undefined) {
         editedFields.foreign_word = editedData.foreign_word;
@@ -365,9 +358,10 @@ const CustomTable = () => {
                         open={openMenu}
                         onClose={handleCloseMenu}
                       >
-                        <MenuItem onClick={() => handleEditClick(item)}>
+                        <MenuItem onClick={() => handleEditClick()}>
                           Edit
                         </MenuItem>
+
                         <MenuItem
                           onClick={() => handleDeleteClick(item.word_id)}
                         >
@@ -385,6 +379,7 @@ const CustomTable = () => {
                       >
                         Edit
                       </Button>
+
                       <Button
                         variant="outlined"
                         color="secondary"
@@ -425,7 +420,7 @@ const CustomTable = () => {
             label="Category"
             fullWidth
             name="category_id"
-            value={editedData.category_id}
+            value={editedData.category_id || ""}
             onChange={handleInputChange}
           >
             {categories.map((category) => (
