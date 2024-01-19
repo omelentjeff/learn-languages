@@ -14,8 +14,8 @@ import Layout from "./components/Layout";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import CategorySelector from "./components/CategorySelector";
+import RedirectIfAuthenticated from "./components/RedirectIfAuthenticated";
 
-import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
@@ -50,13 +50,16 @@ function App() {
   ]);
   const ExercisePageProtected = RoleProtection(ExcercisePage, ["student"]);
 
+  const SignInProtected = RedirectIfAuthenticated(SignIn);
+  const SignUpProtected = RedirectIfAuthenticated(SignUp);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/" element={<SignIn />} />
+          <Route path="/signup" element={<SignUpProtected />} />
+          <Route path="/" element={<SignInProtected />} />
           <Route
             path="/home"
             element={
