@@ -31,7 +31,7 @@ function App() {
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
-    setModeText(darkMode ? "light" : "dark");
+    setModeText(darkMode ? "dark" : "light");
   };
 
   const theme = createTheme({
