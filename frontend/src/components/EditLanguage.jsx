@@ -16,7 +16,12 @@ import {
   DialogActions,
   Typography,
   MenuItem,
+  useMediaQuery,
+  useTheme,
+  IconButton, // New import
+  Menu, // New import
 } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
@@ -45,6 +50,34 @@ const CustomTable = () => {
   const [addCategoryDialogOpen, setAddCategoryDialogOpen] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [menuRowId, setMenuRowId] = useState(null);
+
+  const theme = useTheme(); // Use the theme
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const tableContainerStyle = isMobile ? { overflowX: "auto" } : {};
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
+
+  const handleClickMenu = (event, item) => {
+    setAnchorEl(event.currentTarget);
+    setMenuRowId(item.word_id); // Track which row's menu is open
+  };
+
+  // When closing the menu, reset the menu state
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+    setMenuRowId(null);
+  };
+
+  const addWordPairButtonStyle = isMobile
+    ? { maxWidth: "200px", margin: "10px auto", display: "block" }
+    : { margin: "10px 0" };
+
+  const buttonStyle = isMobile
+    ? { margin: "8px 0", width: "100%" }
+    : { margin: "10px 0" };
 
   useEffect(() => {
     fetchData();
@@ -78,13 +111,13 @@ const CustomTable = () => {
     }
   };
 
-  const handleEditClick = (item) => {
-    setEditedData({
-      ...item,
-      editedField: "category_id",
-      editedValue: item.category_id,
-    });
-    setOpenEditDialog(true);
+  const handleEditClick = () => {
+    const itemToEdit = data.find((item) => item.word_id === menuRowId);
+    if (itemToEdit) {
+      setEditedData(itemToEdit);
+      setOpenEditDialog(true);
+    }
+    handleCloseMenu(); // Close the menu after setting the edit data
   };
 
   const handleSaveEdit = async () => {
@@ -126,6 +159,8 @@ const CustomTable = () => {
       if (error.response) {
         console.error("Response data:", error.response.data);
       }
+    } finally {
+      setAnchorEl(null);
     }
   };
 
@@ -222,6 +257,8 @@ const CustomTable = () => {
   const handleDeleteClick = (id) => {
     setDeleteItemId(id);
     setOpenDeleteDialog(true);
+
+    handleCloseMenu();
   };
 
   const handleConfirmDelete = async () => {
@@ -234,6 +271,8 @@ const CustomTable = () => {
       fetchData();
     } catch (error) {
       console.error("Error deleting row:", error);
+    } finally {
+      setAnchorEl(null);
     }
   };
 
@@ -280,16 +319,9 @@ const CustomTable = () => {
 
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: "20px",
-          marginTop: "20px",
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <Button
-          style={{ backgroundColor: "orangered" }}
+          style={addWordPairButtonStyle}
           variant="contained"
           color="primary"
           onClick={handleAddNewClick}
@@ -315,23 +347,54 @@ const CustomTable = () => {
                 <TableCell>{item.foreign_word}</TableCell>
                 <TableCell>{item.finnish_word}</TableCell>
                 <TableCell>{item.category_name}</TableCell>
-                <TableCell style={{ display: "flex", gap: "1rem" }}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    startIcon={<EditIcon />}
-                    onClick={() => handleEditClick(item)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    startIcon={<DeleteIcon />}
-                    onClick={() => handleDeleteClick(item.word_id)}
-                  >
-                    Delete
-                  </Button>
+                <TableCell>
+                  {isMobile ? (
+                    <>
+                      <IconButton
+                        aria-label="more"
+                        aria-controls="long-menu"
+                        aria-haspopup="true"
+                        onClick={(event) => handleClickMenu(event, item)}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        id="long-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={openMenu}
+                        onClose={handleCloseMenu}
+                      >
+                        <MenuItem onClick={() => handleEditClick(item)}>
+                          Edit
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => handleDeleteClick(item.word_id)}
+                        >
+                          Delete
+                        </MenuItem>
+                      </Menu>
+                    </>
+                  ) : (
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<EditIcon />}
+                        onClick={() => handleEditClick(item)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        startIcon={<DeleteIcon />}
+                        onClick={() => handleDeleteClick(item.word_id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

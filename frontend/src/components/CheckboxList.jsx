@@ -69,7 +69,13 @@ export default function CheckboxList({ onSelectCategories }) {
   }
 
   return (
-    <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+    <List
+      sx={{
+        width: "100%",
+        maxWidth: "100%",
+        bgcolor: "background.paper",
+      }}
+    >
       {categoryData.map((category) => {
         const labelId = category.category_id;
 

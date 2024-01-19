@@ -12,9 +12,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
-
 import LoadingSpinner from "./LoadingSpinner";
-
 import BasicCard from "./BasicCard";
 import axios from "axios";
 
@@ -111,73 +109,60 @@ export default function TeacherDashboard() {
   }
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Box
-        component="main"
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <Toolbar />
+
+      <Button
+        color="inherit"
+        startIcon={<AddIcon />}
+        onClick={handleAddLanguageClick}
         sx={{
-          backgroundColor: (theme) =>
-            theme.palette.mode === "light"
-              ? theme.palette.grey[100]
-              : theme.palette.grey[900],
-          flexGrow: 1,
-          height: "100vh",
-          overflow: "auto",
+          marginLeft: "auto",
+          marginRight: "auto",
+          marginTop: "1rem",
+          marginBottom: "1rem",
+          width: "80%", // Adjust the width for smaller screens
         }}
       >
-        <Toolbar />
+        Add Language
+      </Button>
 
-        <Button
-          color="inherit"
-          startIcon={<AddIcon />}
-          onClick={handleAddLanguageClick}
-          sx={{
-            marginLeft: "auto",
-            marginRight: "auto",
-            marginTop: "1rem",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          {" "}
-          Add Language
-        </Button>
+      <Dialog open={openAddLanguage} onClose={handleCloseAddLanguage}>
+        <DialogTitle>Add New Language</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Language Name"
+            fullWidth
+            name="newLanguage"
+            value={newLanguage}
+            onChange={handleNewLanguageInputChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAddLanguage}>Cancel</Button>
+          <Button onClick={handleConfirmNewLanguage} color="primary">
+            Add Language
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-        <Dialog open={openAddLanguage} onClose={handleCloseAddLanguage}>
-          <DialogTitle>Add New Language</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Language Name"
-              fullWidth
-              name="newLanguage"
-              value={newLanguage}
-              onChange={handleNewLanguageInputChange}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseAddLanguage}>Cancel</Button>
-            <Button onClick={handleConfirmNewLanguage} color="primary">
-              Add Language
-            </Button>
-          </DialogActions>
-        </Dialog>
+      <Container maxWidth="lg" sx={{ flexGrow: 1, marginBottom: "2rem" }}>
+        <Grid container spacing={3}>
+          {cardsData.map((language) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={language.language_id}>
+              <BasicCard
+                key={language.language_id}
+                languageId={language.language_id}
+                languageName={language.language_name}
+                wordCount={language.wordCount}
+                onDelete={() => handleDeleteLanguage(language.language_id)}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
 
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Grid container spacing={3}>
-            {cardsData.map((language) => (
-              <Grid item xs={4} md={4} lg={3} key={language.language_id}>
-                <BasicCard
-                  key={language.language_id}
-                  languageId={language.language_id}
-                  languageName={language.language_name}
-                  wordCount={language.wordCount}
-                  onDelete={() => handleDeleteLanguage(language.language_id)}
-                />
-              </Grid>
-            ))}
-          </Grid>
-          <Copyright sx={{ mt: 20 }} />
-        </Container>
-      </Box>
+      <Copyright sx={{ mt: "auto" }} />
     </Box>
   );
 }

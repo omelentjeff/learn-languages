@@ -5,6 +5,8 @@ import Button from "@mui/material/Button";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 
 const CategorySelector = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -59,24 +61,29 @@ const CategorySelector = () => {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        flexDirection: "column",
-      }}
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
+      spacing={2}
     >
-      <h2>
-        Choose the categories you want to practice (Leave empty if you want to
-        practice all)
-      </h2>
-      <CheckboxList onSelectCategories={handleSelectCategories} />
-      <Button color="primary" onClick={handleStartClick}>
-        START
-      </Button>
-    </div>
+      <Grid item xs={12} sm={8} md={6} lg={4}>
+        <Typography variant="h6" align="center" gutterBottom>
+          Choose the categories you want to practice (Leave empty if you want to
+          practice all)
+        </Typography>
+        <CheckboxList onSelectCategories={handleSelectCategories} />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleStartClick}
+          fullWidth
+        >
+          START
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
 
