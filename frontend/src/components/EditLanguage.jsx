@@ -334,9 +334,9 @@ const CustomTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((item) => (
+            {data.map((item, index) => (
               <TableRow key={item.word_id}>
-                <TableCell>{item.word_id}</TableCell>
+                <TableCell>{index + 1}</TableCell>
                 <TableCell>{item.foreign_word}</TableCell>
                 <TableCell>{item.finnish_word}</TableCell>
                 <TableCell>{item.category_name}</TableCell>
