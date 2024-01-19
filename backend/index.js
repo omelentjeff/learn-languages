@@ -17,7 +17,7 @@ const connection = mysql.createPool(config);
 app.use(express.json());
 
 const corsOptions = {
-  origin: "http://localhost:5175",
+  origin: "http://localhost:5173",
   credentials: true,
 };
 
