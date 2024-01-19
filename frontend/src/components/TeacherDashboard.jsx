@@ -121,7 +121,7 @@ export default function TeacherDashboard() {
           marginRight: "auto",
           marginTop: "1rem",
           marginBottom: "1rem",
-          width: "80%", // Adjust the width for smaller screens
+          maxWidth: "80%",
         }}
       >
         Add Language

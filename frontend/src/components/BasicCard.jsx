@@ -57,7 +57,9 @@ export default function BasicCard({
       </CardContent>
       <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
         <Link to={`/edit/${languageName}`}>
-          <Button size="small">Edit</Button>
+          <Button variant="contained" color="primary">
+            Edit
+          </Button>
         </Link>
         <IconButton onClick={() => handleDeleteRow(onDelete)}>
           <DeleteIcon />
