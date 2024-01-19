@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 const CategorySelector = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -14,6 +15,12 @@ const CategorySelector = () => {
 
   const navigate = useNavigate();
   const { languageName } = useParams();
+
+  const [languageChoice, setLanguageChoice] = useState("Finnish");
+
+  const handleLanguageChange = (language) => {
+    setLanguageChoice(language);
+  };
 
   const handleSelectCategories = (categories) => {
     setSelectedCategories(categories);
@@ -25,6 +32,7 @@ const CategorySelector = () => {
       state: {
         languageName: languageName,
         selectedCategories: selectedCategories,
+        languageChoice: languageChoice,
       },
     });
   };
@@ -67,20 +75,41 @@ const CategorySelector = () => {
       alignItems="center"
       minHeight="100vh"
       spacing={2}
-      xs={{ margin: 0, padding: 0 }}
+      sx={{ margin: 0, padding: 0 }}
     >
       <Grid item xs={12} sm={8} md={6} lg={4}>
-        <Typography sx={{ mb: 10 }} variant="h6" align="center" gutterBottom>
+        <Typography sx={{ mb: 4 }} variant="h6" align="center" gutterBottom>
           Choose the categories you want to practice (Leave empty if you want to
           practice all)
         </Typography>
+
+        <Box sx={{ textAlign: "center", mb: 3 }}>
+          <Typography sx={{ mb: 2 }} variant="body1">
+            Select which language to answer:
+          </Typography>
+          <Button
+            variant={languageChoice === "Finnish" ? "contained" : "outlined"}
+            color="primary"
+            onClick={() => handleLanguageChange("Finnish")}
+          >
+            Finnish
+          </Button>
+          <Button
+            variant={languageChoice !== "Finnish" ? "contained" : "outlined"}
+            color="primary"
+            onClick={() => handleLanguageChange(languageName)}
+          >
+            {languageName}
+          </Button>
+        </Box>
+
         <CheckboxList onSelectCategories={handleSelectCategories} />
-        {/* Button is now inside the same Grid item */}
+
         <Button
           variant="contained"
           color="primary"
           onClick={handleStartClick}
-          sx={{ maxWidth: "80%", mt: 6, display: "block", marginX: "auto" }} // Center the button and reduce top margin
+          sx={{ maxWidth: "80%", mt: 6, display: "block", marginX: "auto" }}
         >
           START
         </Button>
