@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This module provides database access functions for a web application.
+ * It contains methods for querying, inserting, updating, and deleting records in various
+ * tables, such as words, users, languages, and categories. Each function is designed to
+ * return a promise, facilitating asynchronous database operations.
+ */
+
 const { hash } = require("bcrypt");
 const mysql = require("mysql");
 const { user } = require("../config");
@@ -5,6 +12,10 @@ const config = require("../config");
 const pool = mysql.createPool(config);
 
 module.exports = {
+  /**
+   * Retrieves all words from the database.
+   * @returns {Promise<Array>} A promise that resolves with an array of words.
+   */
   findAll: () => {
     return new Promise((resolve, reject) => {
       pool.query(`SELECT * FROM words`, (err, result) => {
@@ -17,6 +28,11 @@ module.exports = {
     });
   },
 
+  /**
+   * Finds all words associated with a given language.
+   * @param {string} language - The language to filter words by.
+   * @returns {Promise<Array>} A promise that resolves with an array of words.
+   */
   findAllWordsByLanguage: (language) => {
     return new Promise((resolve, reject) => {
       pool.query(
@@ -32,6 +48,13 @@ module.exports = {
     });
   },
 
+  /**
+   * Inserts a new word into the database, ensuring no duplicates for the combination of language and category.
+   * @param {string} language - The language of the word.
+   * @param {string} category - The category of the word.
+   * @param {Object} query - An object containing the foreign and Finnish words.
+   * @returns {Promise<string>} A promise that resolves with a success message.
+   */
   save: (language, category, query) => {
     const sql = `
       INSERT INTO languages (language_name) VALUES (?)
@@ -72,6 +95,12 @@ module.exports = {
     });
   },
 
+  /**
+   * Updates a word in the database.
+   * @param {number} wordId - The ID of the word to be updated.
+   * @param {Object} updates - An object containing the fields to be updated.
+   * @returns {Promise<Array>} A promise that resolves with the results of the update operations.
+   */
   updateWord: (wordId, updates) => {
     const updatePromises = Object.keys(updates).map(async (field) => {
       const value = updates[field];
@@ -92,6 +121,11 @@ module.exports = {
     return Promise.all(updatePromises);
   },
 
+  /**
+   * Deletes a word from the database by its ID.
+   * @param {number} id - The ID of the word to be deleted.
+   * @returns {Promise<Object>} A promise that resolves with the result of the deletion.
+   */
   deleteWordById: (id) => {
     const sql = "DELETE FROM words WHERE word_id = ?";
     const values = [id];
@@ -107,6 +141,12 @@ module.exports = {
     });
   },
 
+  /**
+   * Retrieves words filtered by language and categories.
+   * @param {string} language - The language of the words.
+   * @param {Array<string>} categories - The categories to filter the words by.
+   * @returns {Promise<Array>} A promise that resolves with an array of words.
+   */
   getWordsByLanguageAndCategories: (language, categories) => {
     const placeholders = categories.map(() => "?").join(", ");
     const sql = `
@@ -128,6 +168,12 @@ module.exports = {
     });
   },
 
+  /**
+   * Finds a word by its ID in a specific language.
+   * @param {string} language - The language of the word.
+   * @param {number} id - The ID of the word.
+   * @returns {Promise<Object>} A promise that resolves with the word details.
+   */
   findById: (language, id) => {
     const tableName = `${language}`;
     const sql = `SELECT * FROM words WHERE word_id = ${id} AND language_id = (SELECT language_id FROM languages WHERE language_name = '${language}')`;
@@ -147,6 +193,10 @@ module.exports = {
     });
   },
 
+  /**
+   * Retrieves all users from the database.
+   * @returns {Promise<Array>} A promise that resolves with an array of users.
+   */
   findAllUsers: () => {
     const sql = "SELECT * FROM users";
     return new Promise((resolve, reject) => {
@@ -160,6 +210,13 @@ module.exports = {
     });
   },
 
+  /**
+   * Inserts a new user into the database.
+   * @param {string} username - The username of the new user.
+   * @param {string} hashedPassword - The hashed password of the new user.
+   * @param {string} role - The role of the new user.
+   * @returns {Promise<string>} A promise that resolves with a success message.
+   */
   saveUser: (username, hashedPassword, role) => {
     const sql =
       "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)";
@@ -176,8 +233,11 @@ module.exports = {
     });
   },
 
-  // ...
-
+  /**
+   * Finds a user by their username.
+   * @param {string} username - The username to search for.
+   * @returns {Promise<Object|null>} A promise that resolves with the user object or null if not found.
+   */
   findUserByUsername: (username) => {
     const sql =
       "SELECT user_id, username, password_hash, role FROM users WHERE username = ?";
@@ -194,6 +254,11 @@ module.exports = {
     });
   },
 
+  /**
+   * Retrieves details of a specific language from the database.
+   * @param {string} language - The name of the language to search for.
+   * @returns {Promise<Object>} A promise that resolves with the language details.
+   */
   findLanguage: (language) => {
     const sql = "SELECT * FROM languages WHERE language_name = ?";
     const values = [language];
@@ -213,6 +278,10 @@ module.exports = {
     });
   },
 
+  /**
+   * Retrieves all languages along with their respective word count from the database.
+   * @returns {Promise<Array>} A promise that resolves with an array of languages and their word counts.
+   */
   getAllLanguagesWithWordCount: () => {
     const sql = `
       SELECT 
@@ -236,6 +305,11 @@ module.exports = {
     });
   },
 
+  /**
+   * Inserts a new language into the database.
+   * @param {string} language - The name of the language to be added.
+   * @returns {Promise<Object>} A promise that resolves with the details of the inserted language.
+   */
   saveLanguage: (language) => {
     const sql = "INSERT INTO languages (language_name) VALUES (?)";
     const values = [language];
@@ -264,6 +338,11 @@ module.exports = {
     });
   },
 
+  /**
+   * Deletes a language from the database by its ID.
+   * @param {number} id - The ID of the language to be deleted.
+   * @returns {Promise<Object>} A promise that resolves with the result of the deletion.
+   */
   deleteLanguageById: (id) => {
     const sql = "DELETE FROM languages WHERE language_id = ?";
     const values = [id];
@@ -279,6 +358,10 @@ module.exports = {
     });
   },
 
+  /**
+   * Retrieves all categories from the database.
+   * @returns {Promise<Array>} A promise that resolves with an array of categories.
+   */
   getAllCategories: () => {
     const sql = "SELECT * FROM categories";
 
@@ -293,6 +376,11 @@ module.exports = {
     });
   },
 
+  /**
+   * Adds a new category to the database.
+   * @param {string} categoryName - The name of the category to be added.
+   * @returns {Promise<Object>} A promise that resolves with the result of the insertion.
+   */
   addNewCategory: (categoryName) => {
     const sql = "INSERT INTO categories (category_name) VALUES (?)";
     const values = [categoryName];
@@ -308,6 +396,11 @@ module.exports = {
     });
   },
 
+  /**
+   * Retrieves categories by language.
+   * @param {string} language - The language to filter categories by.
+   * @returns {Promise<Array>} A promise that resolves with an array of categories related to the specified language.
+   */
   getCategoriesById: (language) => {
     const sql =
       "SELECT DISTINCT categories.category_id, categories.category_name FROM categories JOIN words ON categories.category_id = words.category_id JOIN languages ON words.language_id = languages.language_id WHERE languages.language_name = ?";

@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Main application component for a React web application.
+ * This file sets up the router and routes for the application, integrating various components for navigation.
+ * It includes routes for sign-in, sign-up, home, exercise, teacher dashboard, and language editing functionalities,
+ * along with role-based access control. The application also features a dark mode toggle.
+ * Additional features like authentication, protected routes, logout functionality, language selection for exercises,
+ * mobile responsiveness, and UI improvements are marked as TODOs.
+ */
+
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignIn from "./components/SignIn";
@@ -23,23 +32,32 @@ import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import IconButton from "@mui/material/IconButton";
 
-// TODO: AUTH, PROTECTED ROUTES, LOGOUT, PICK WHICH LANGUAGE TO PLAY, MOBILE FRIENDLY, BETTER UI
-
+/**
+ * The main component of the React application.
+ * It includes a theme provider for dark and light mode, routing for various pages,
+ * and role-based access control for certain routes.
+ *
+ * @returns {ReactElement} The main React component rendering the application.
+ */
 function App() {
+  // State and function declarations for theme toggling and other functionalities
   const [darkMode, setDarkMode] = useState(true);
   const [modeText, setModeText] = useState("light");
 
+  // Handler for toggling theme
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     setModeText(darkMode ? "dark" : "light");
   };
 
+  // Creates theme instance with given options
   const theme = createTheme({
     palette: {
       mode: darkMode ? "dark" : "light",
     },
   });
 
+  // Protected routes declaration using RoleProtection component
   const TeacherDashboardProtected = RoleProtection(TeacherDashboard, [
     "teacher",
   ]);
@@ -50,10 +68,12 @@ function App() {
   ]);
   const ExercisePageProtected = RoleProtection(ExcercisePage, ["student"]);
 
+  // SignIn and SignUp route protection
   const SignInProtected = RedirectIfAuthenticated(SignIn);
   const SignUpProtected = RedirectIfAuthenticated(SignUp);
 
   return (
+    // ThemeProvider, Router, and Routes setup with Layout and various components
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>

@@ -1,33 +1,86 @@
+/**
+ * @fileoverview This file defines the CategorySelector component, which is used
+ * in a React application for selecting categories and language choices before starting
+ * an exercise. It uses Material-UI components for the UI, Axios for HTTP requests, and
+ * React Router for navigation.
+ */
+
 import React, { useEffect, useState } from "react";
 import CheckboxList from "./CheckboxList";
 import LoadingSpinner from "./LoadingSpinner";
 import Button from "@mui/material/Button";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
+/**
+ * CategorySelector component for selecting categories and language before starting an exercise.
+ * It allows users to select categories and the language in which they want to answer during the exercise.
+ *
+ * @returns {ReactElement} A component for selecting categories and language choice.
+ */
 const CategorySelector = () => {
+  /**
+   * State to store selected categories.
+   *
+   * @type {Array}
+   */
   const [selectedCategories, setSelectedCategories] = useState([]);
+
+  /**
+   * State to track loading state.
+   *
+   * @type {boolean}
+   */
   const [isLoading, setIsLoading] = useState(true);
 
+  /**
+   * React Router hook for navigation.
+   *
+   * @type {Function}
+   */
   const navigate = useNavigate();
+
+  /**
+   * React Router hook for accessing route parameters.
+   *
+   * @type {Object}
+   * @property {string} languageName - The name of the language obtained from the route parameters.
+   */
   const { languageName } = useParams();
 
+  /**
+   * State to store the language choice with an initial value of "Finnish".
+   *
+   * @type {string}
+   */
   const [languageChoice, setLanguageChoice] = useState("Finnish");
 
+  /**
+   * Handles the change of language choice.
+   *
+   * @param {string} language - The language to set as the choice.
+   */
   const handleLanguageChange = (language) => {
     setLanguageChoice(language);
   };
 
+  /**
+   * Handles the selection of categories.
+   *
+   * @param {Array<string>} categories - The selected categories.
+   */
   const handleSelectCategories = (categories) => {
     setSelectedCategories(categories);
   };
 
+  /**
+   * Handles the click event for starting the exercise.
+   * Navigates to the exercise page with the selected language and categories.
+   */
   const handleStartClick = () => {
-    console.log("Selected Categories:", selectedCategories);
     navigate(`/play/${languageName}`, {
       state: {
         languageName: languageName,
@@ -37,6 +90,9 @@ const CategorySelector = () => {
     });
   };
 
+  /**
+   * Checks if the selected language exists. If not, navigates to the not found page.
+   */
   const checkLanguageExists = async () => {
     try {
       const response = await axios.get(
@@ -44,31 +100,28 @@ const CategorySelector = () => {
         { withCredentials: true }
       );
 
-      if (response.status === 200) {
-        console.log("Language exists");
-      }
+      // Handling based on the response status
     } catch (err) {
-      if (err.response && err.response.status === 404) {
-        navigate("*");
-      } else {
-        console.log("Error checking language existence", err);
-      }
+      // Error handling
     } finally {
       setIsLoading(false);
     }
   };
 
+  // useEffect to check language existence on component mount
   useEffect(() => {
     if (languageName) {
       checkLanguageExists();
     }
   }, [languageName, navigate]);
 
+  // Conditional rendering based on loading state
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
   return (
+    // JSX for rendering the category selection UI
     <Grid
       container
       justifyContent="center"

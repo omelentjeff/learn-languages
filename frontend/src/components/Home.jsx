@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the Home component, which serves as the main page
+ * of a language learning application. It displays a collection of PlayCard components,
+ * each representing a different language available for practice. The component fetches
+ * language data from a server and uses Material-UI components for layout and styling.
+ */
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -7,10 +13,31 @@ import axios from "axios";
 import PlayCard from "./Playcard";
 import LoadingSpinner from "./LoadingSpinner";
 
+/**
+ * Home component that displays available languages for exercises.
+ *
+ * @returns {ReactElement} The home page of the application, displaying a grid of language cards.
+ */
 export default function Home() {
+  /**
+   * State to store data for cards.
+   *
+   * @type {Array}
+   */
   const [cardsData, setCardsData] = useState([]);
+
+  /**
+   * State to track loading state.
+   *
+   * @type {boolean}
+   */
   const [isLoading, setIsLoading] = useState(true);
 
+  /**
+   * Fetches data for the language cards from the server.
+   * On success, sets the fetched data to the cardsData state.
+   * On failure, logs an error to the console.
+   */
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -25,14 +52,17 @@ export default function Home() {
     }
   };
 
+  // Fetch data on component mount
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Loading spinner while data is being fetched
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
+  // Main content rendering
   return (
     <Box
       component="main"

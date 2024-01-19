@@ -18,16 +18,60 @@ import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
+/**
+ * React component for user login and authentication.
+ *
+ * This component provides a user interface for users to enter their
+ * username and password to authenticate and access the application.
+ *
+ * @returns {React.Component} - Sign-in form component.
+ */
 function SignIn() {
+  /**
+   * State to control the visibility of the password input.
+   *
+   * @type {boolean}
+   */
   const [showPassword, setShowPassword] = useState(false);
+
+  /**
+   * State to track loading state during form submission.
+   *
+   * @type {boolean}
+   */
   const [loading, setLoading] = useState(false);
+
+  /**
+   * State to store form data, including username and password.
+   *
+   * @type {Object}
+   * @property {string} username - The user's username.
+   * @property {string} password - The user's password.
+   */
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
+
+  /**
+   * State to store error messages related to login.
+   *
+   * @type {string}
+   */
   const [errorMessage, setErrorMessage] = useState("");
+
+  /**
+   * React Router hook for navigation.
+   *
+   * @type {Function}
+   */
   const navigate = useNavigate();
 
+  /**
+   * Function to handle form submission and initiate user authentication.
+   *
+   * @param {Event} event - The form submission event.
+   */
   const handleSubmit = async (event) => {
     event.preventDefault();
     setErrorMessage("");
@@ -83,6 +127,11 @@ function SignIn() {
     }
   };
 
+  /**
+   * Function to handle input change and update the form data state.
+   *
+   * @param {Event} event - The input change event.
+   */
   const handleChange = (event) => {
     setFormData({
       ...formData,
@@ -91,6 +140,7 @@ function SignIn() {
   };
 
   return (
+    // JSX code for the sign-in form component
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box

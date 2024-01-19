@@ -34,12 +34,46 @@ function Copyright(props) {
   );
 }
 
+/**
+ * React component for the teacher's dashboard, displaying a list of languages and allowing language management.
+ *
+ * This component provides a dashboard for teachers to manage languages,
+ * including adding new languages and deleting existing ones.
+ *
+ * @returns {React.Component} - Teacher's dashboard component.
+ */
 export default function TeacherDashboard() {
+  /**
+   * State to store the data for language cards displayed on the dashboard.
+   *
+   * @type {Array}
+   */
   const [cardsData, setCardsData] = useState([]);
+
+  /**
+   * State to control the visibility of the "Add Language" dialog.
+   *
+   * @type {boolean}
+   */
   const [openAddLanguage, setOpenAddLanguage] = useState(false);
+
+  /**
+   * State to store the name of the new language being added.
+   *
+   * @type {string}
+   */
   const [newLanguage, setNewLanguage] = useState("");
+
+  /**
+   * State to track loading state while fetching data.
+   *
+   * @type {boolean}
+   */
   const [isLoading, setIsLoading] = useState(true);
 
+  /**
+   * Function to fetch data for language cards from the server.
+   */
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -54,14 +88,25 @@ export default function TeacherDashboard() {
     }
   };
 
+  /**
+   * Function to handle the click event for adding a new language.
+   */
   const handleAddLanguageClick = () => {
     setOpenAddLanguage(true);
   };
 
+  /**
+   * Function to handle the close event of the "Add Language" dialog.
+   */
   const handleCloseAddLanguage = () => {
     setOpenAddLanguage(false);
   };
 
+  /**
+   * Function to handle the deletion of a language.
+   *
+   * @param {string} languageId - The ID of the language to delete.
+   */
   const handleDeleteLanguage = async (languageId) => {
     try {
       await axios.delete(
@@ -77,10 +122,18 @@ export default function TeacherDashboard() {
     }
   };
 
+  /**
+   * Function to handle input change for the new language name.
+   *
+   * @param {Event} event - The input change event.
+   */
   const handleNewLanguageInputChange = (event) => {
     setNewLanguage(event.target.value);
   };
 
+  /**
+   * Function to confirm the addition of a new language.
+   */
   const handleConfirmNewLanguage = async () => {
     try {
       console.log("Adding new language...", newLanguage);
@@ -109,6 +162,7 @@ export default function TeacherDashboard() {
   }
 
   return (
+    // JSX code for the teacher's dashboard component
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Toolbar />
 

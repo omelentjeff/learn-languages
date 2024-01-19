@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the ExercisePage component, a React component used
+ * for displaying and conducting exercises in a language learning application. It allows
+ * users to answer questions based on selected categories and tracks their responses.
+ * The component uses Axios for HTTP requests and Material-UI icons for displaying results.
+ */
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -5,16 +11,77 @@ import LoadingSpinner from "./LoadingSpinner";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 
+/**
+ * ExercisePage component for conducting language exercises.
+ *
+ * @returns {ReactElement} A component that handles displaying and conducting exercises.
+ */
 const ExercisePage = () => {
+  /**
+   * React Router hook for accessing the current location's state.
+   *
+   * @type {Object}
+   * @property {string} languageName - The name of the language.
+   * @property {Array} selectedCategories - An array of selected categories.
+   * @property {string} languageChoice - The chosen language.
+   */
   const { state } = useLocation();
+
+  /**
+   * Destructuring properties from the state object.
+   *
+   * @type {Object}
+   * @property {string} languageName - The name of the language obtained from the state.
+   * @property {Array} selectedCategories - An array of selected categories obtained from the state.
+   * @property {string} languageChoice - The chosen language obtained from the state.
+   */
   const { languageName, selectedCategories, languageChoice } = state;
+
+  /**
+   * State to store exercises data.
+   *
+   * @type {Array}
+   */
   const [exercises, setExercises] = useState([]);
+
+  /**
+   * State to store the index of the current question.
+   *
+   * @type {number}
+   */
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  /**
+   * State to store user answers.
+   *
+   * @type {Array}
+   */
   const [userAnswers, setUserAnswers] = useState([]);
+
+  /**
+   * State to track whether the exercise is completed.
+   *
+   * @type {boolean}
+   */
   const [exerciseCompleted, setExerciseCompleted] = useState(false);
+
+  /**
+   * React Router hook for navigation.
+   *
+   * @type {Function}
+   */
   const navigate = useNavigate();
+
+  /**
+   * State to track loading state.
+   *
+   * @type {boolean}
+   */
   const [isLoading, setIsLoading] = useState(true);
 
+  /**
+   * Fetches exercise data from the server based on selected categories and language.
+   */
   const fetchData = async () => {
     try {
       const response = await axios.post(
@@ -33,14 +100,26 @@ const ExercisePage = () => {
     }
   };
 
+  /**
+   * Navigates back to the home page.
+   */
   const handleBackHome = () => {
     navigate("/home");
   };
 
+  /**
+   * Navigates to the page for starting a new exercise.
+   */
   const handlePlayAgain = () => {
     navigate(`/${languageName}`);
   };
 
+  /**
+   * Handles submitting an answer and moves to the next question or completes the exercise.
+   *
+   * @param {string} answer - The answer submitted by the user.
+   * @param {HTMLFormElement} form - The form element that the answer was submitted from.
+   */
   const handleAnswerSubmit = (answer, form) => {
     const currentExercise = exercises[currentQuestionIndex];
 
@@ -72,14 +151,17 @@ const ExercisePage = () => {
     }
   };
 
+  // Fetch data on component mount
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Conditional rendering based on loading state
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
+  // Exercise questions rendering
   if (!exerciseCompleted && currentQuestionIndex < exercises.length) {
     const currentExercise = exercises[currentQuestionIndex];
     const question =
@@ -145,6 +227,7 @@ const ExercisePage = () => {
     );
   }
 
+  // Exercise results rendering
   return (
     <div style={{ textAlign: "left", padding: "20px" }}>
       <div style={{ maxWidth: "90%", margin: "auto" }}>

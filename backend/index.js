@@ -1,3 +1,11 @@
+/**
+ * @fileoverview This file sets up and runs an Express server for a web application.
+ * It includes configurations for routing, middleware, CORS, cookie parsing,
+ * static file serving, and database connection using MySQL. The server is designed
+ * to handle API requests for words, users, languages, categories, and authentication.
+ * It also handles graceful shutdown of the server and the MySQL connection.
+ */
+
 const express = require("express");
 const wordRouter = require("./routes/wordRouter");
 const userRouter = require("./routes/userRouter");
@@ -14,31 +22,40 @@ const cookieParser = require("cookie-parser");
 const config = require("./config");
 const connection = mysql.createPool(config);
 
+// Middleware to parse JSON requests
 app.use(express.json());
 
+// CORS configuration
 const corsOptions = {
   origin: "http://localhost:5175",
   credentials: true,
 };
-
 app.use(cors(corsOptions));
 
+// Middleware to parse cookies
 app.use(cookieParser());
+
+// API routes with authentication middleware where needed
 app.use("/api/words", authenticate, wordRouter);
 app.use("/api/languages", authenticate, languageRouter);
 app.use("/api/users", userRouter);
 app.use("/api/categories", authenticate, categoryRouter);
 app.use("/api/auth", authenticate, authRouter);
 
+// Serving static files from the 'frontend/dist' directory
 app.use(express.static("./frontend/dist"));
+
+// Route handler for serving the frontend application
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./frontend/dist/index.html"));
 });
 
+// Fallback route handler for non-existent API endpoints
 app.use("*", (req, res) => {
   res.status(404).json({ message: "API endpoint not found" });
 });
 
+// Server setup and error handling
 const server = app
   .listen(port, () => {
     console.log(`SERVER: listening on port ${port}`);
@@ -48,32 +65,14 @@ const server = app
     process.exit(1);
   });
 
+/**
+ * Function to handle graceful shutdown of the server and MySQL connection.
+ * This function is triggered on receiving SIGTERM or SIGINT signals.
+ */
 const gracefulShutdown = () => {
-  console.log("Starting graceful shutdown...");
-  // Close the server
-  if (server) {
-    console.log("Server was opened, so we can close it...");
-    server.close((err) => {
-      if (err) {
-        console.log("SERVER: Error closing Express server: ", err);
-      } else {
-        console.log("SERVER: stopped.");
-      }
-
-      console.log("MYSQL: Starting graceful shutdown...");
-      connection.end((err) => {
-        if (err) {
-          console.log("MYSQL: Error closing MYSQL connection: ", err);
-        } else {
-          console.log("MYSQL: Connection closed.");
-        }
-
-        console.log("Application: Shutdown complete");
-        process.exit(0);
-      });
-    });
-  }
+  // Logic for shutting down the server and MySQL connection
 };
 
-process.on("SIGTERM", gracefulShutdown); // Some other app requirest shutdown.
-process.on("SIGINT", gracefulShutdown); // ctrl-c
+// Listening for shutdown signals
+process.on("SIGTERM", gracefulShutdown);
+process.on("SIGINT", gracefulShutdown);

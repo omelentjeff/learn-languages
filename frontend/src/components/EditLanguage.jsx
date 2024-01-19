@@ -1,3 +1,9 @@
+/**
+ * @fileoverview This file defines the CustomTable component, a React component used
+ * for displaying and managing language exercises. It includes functionality for adding,
+ * editing, and deleting word pairs and categories. The component uses Material-UI components
+ * for the UI and Axios for making HTTP requests.
+ */
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -28,7 +34,22 @@ import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner";
 
+/**
+ * CustomTable component for displaying and managing word pairs and categories.
+ *
+ * @returns {ReactElement} A table component with add, edit, and delete functionalities for word pairs and categories.
+ */
 const CustomTable = () => {
+  /**
+   * State to store edited data for an exercise with initial values.
+   *
+   * @type {Object}
+   * @property {number|null} word_id - The ID of the word, initially set to null.
+   * @property {string} foreign_name - The foreign word name, initially an empty string.
+   * @property {string} finnish_name - The Finnish word name, initially an empty string.
+   * @property {string} category_name - The category name, initially an empty string.
+   * @property {string} category_id - The category ID, initially an empty string.
+   */
   const [editedData, setEditedData] = useState({
     word_id: null,
     foreign_name: "",
@@ -36,35 +57,122 @@ const CustomTable = () => {
     category_name: "",
     category_id: "",
   });
+
+  /**
+   * React Router hook for accessing route parameters.
+   *
+   * @type {Object}
+   * @property {string} languageName - The name of the language obtained from the route parameters.
+   */
   const { languageName } = useParams();
+
+  /**
+   * State to store data with an initial empty array.
+   *
+   * @type {Array}
+   */
+
   const [data, setData] = useState([]);
+
+  /**
+   * State to control the visibility of the edit dialog.
+   *
+   * @type {boolean}
+   */
+
   const [openEditDialog, setOpenEditDialog] = useState(false);
+
+  /**
+   * State to control the visibility of the delete dialog.
+   *
+   * @type {boolean}
+   */
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+  /**
+   * State to store the ID of the item to delete with an initial value of null.
+   *
+   * @type {number|null}
+   */
   const [deleteItemId, setDeleteItemId] = useState(null);
+
+  /**
+   * State to store new exercise data with initial values.
+   *
+   * @type {Object}
+   * @property {string} foreign_word - The foreign word name, initially an empty string.
+   * @property {string} finnish_word - The Finnish word name, initially an empty string.
+   * @property {string} category - The category name, initially an empty string.
+   */
   const [newExercise, setNewExercise] = useState({
     foreign_word: "",
     finnish_word: "",
     category: "",
   });
+
+  /**
+   * State to control the visibility of the add exercise dialog.
+   *
+   * @type {boolean}
+   */
   const [addExerciseDialogOpen, setAddExerciseDialogOpen] = useState(false);
+
+  /**
+   * State to store an error message with an initial empty string.
+   *
+   * @type {string}
+   */
   const [error, setError] = useState("");
+
+  /**
+   * State to store categories with an initial empty array.
+   *
+   * @type {Array}
+   */
   const [categories, setCategories] = useState([]);
+
+  /**
+   * State to control the visibility of the add category dialog.
+   *
+   * @type {boolean}
+   */
   const [addCategoryDialogOpen, setAddCategoryDialogOpen] = useState(false);
+
+  /**
+   * State to store the name of a new category with an initial empty string.
+   *
+   * @type {string}
+   */
   const [newCategory, setNewCategory] = useState("");
+
+  /**
+   * State to track loading state.
+   *
+   * @type {boolean}
+   */
   const [isLoading, setIsLoading] = useState(true);
 
-  const theme = useTheme(); // Use the theme
+  // Theme and media query hooks
+  const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // Menu state
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
 
+  /**
+   * Handles the click event to open the menu.
+   * @param {Object} event - The event object.
+   * @param {Object} item - The item data for the clicked row.
+   */
   const handleClickMenu = (event, item) => {
     setAnchorEl(event.currentTarget);
     setEditedData(item);
   };
 
-  // When closing the menu, reset the menu state
+  /**
+   * Closes the menu and resets its state.
+   */
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
@@ -78,6 +186,10 @@ const CustomTable = () => {
     fetchCategories();
   }, []);
 
+  // Fetch data functions and useEffect
+  /**
+   * Fetches data from the server and updates the table.
+   */
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -92,6 +204,9 @@ const CustomTable = () => {
     }
   };
 
+  /**
+   * Fetches categories data from the server.
+   */
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
@@ -105,6 +220,11 @@ const CustomTable = () => {
     }
   };
 
+  // Event handlers for editing, adding, and deleting word pairs and categories
+  /**
+   * Handles the click event to open the edit dialog.
+   * @param {Object|null} item - The item data to be edited. If null, a new item will be created.
+   */
   const handleEditClick = (item = null) => {
     if (!isMobile && item) {
       setEditedData(item);
@@ -114,6 +234,9 @@ const CustomTable = () => {
     handleCloseMenu();
   };
 
+  /**
+   * Handles saving the edited data.
+   */
   const handleSaveEdit = async () => {
     try {
       if (
@@ -157,6 +280,9 @@ const CustomTable = () => {
     }
   };
 
+  /**
+   * Handles the click event to open the dialog for adding a new word pair.
+   */
   const handleAddNewClick = () => {
     setNewExercise({
       foreign_word: "",
@@ -166,6 +292,9 @@ const CustomTable = () => {
     setAddExerciseDialogOpen(true);
   };
 
+  /**
+   * Handles the confirmation action for adding a new word pair.
+   */
   const handleConfirmNew = async () => {
     try {
       if (
@@ -196,14 +325,28 @@ const CustomTable = () => {
     }
   };
 
+  /**
+   * Handles the cancel button
+   */
   const handleCancelNew = () => {
     setAddExerciseDialogOpen(false);
     setError("");
   };
 
+  /**
+   * Handles changes in the input fields of the form for adding a new exercise.
+   * This function updates the state of the new exercise based on the input field changes.
+   *
+   * For the 'category_id' field, it finds the corresponding category object and updates both
+   * the 'category_id' and 'category' (name) in the state. For other fields, it directly updates
+   * the corresponding value in the newExercise state.
+   *
+   * @param {Object} e - The event object from the input field.
+   */
   const handleInputChangeAdd = (e) => {
     const { name, value } = e.target;
 
+    // If the input change is for the 'category_id', find the corresponding category and update
     if (name === "category_id") {
       const selectedCategory = categories.find(
         (category) => category.category_id === value
@@ -216,6 +359,7 @@ const CustomTable = () => {
         });
       }
     } else {
+      // For other inputs, directly update the corresponding field in the state
       setNewExercise({
         ...newExercise,
         [name]: value,
@@ -223,9 +367,21 @@ const CustomTable = () => {
     }
   };
 
+  /**
+   * Handles input changes in the form for editing an existing exercise.
+   * This function updates the state of the edited data based on the changes in the input fields.
+   *
+   * For changes in the 'category_id' field, it finds the corresponding category object and updates
+   * both the 'category_id' and 'category_name' in the editedData state. For other input fields, it
+   * updates the corresponding value in the editedData state, along with the field name and value
+   * that were changed.
+   *
+   * @param {Object} e - The event object from the input field, containing the name and value.
+   */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
+    // If the input change is for the 'category_id', find the corresponding category and update
     if (name === "category_id") {
       const selectedCategory = categories.find(
         (category) => category.category_id === value
@@ -238,6 +394,7 @@ const CustomTable = () => {
         }));
       }
     } else {
+      // For other inputs, directly update the corresponding field in the state, along with edited field details
       setEditedData((prevData) => ({
         ...prevData,
         [name]: value,
@@ -247,70 +404,139 @@ const CustomTable = () => {
     }
   };
 
+  /**
+   * Handles the click event for initiating the deletion process of an item.
+   * This function sets the ID of the item to be deleted and opens the delete confirmation dialog.
+   * It also ensures that any open menu is closed when the delete process is initiated.
+   *
+   * @param {number} id - The ID of the item to be deleted.
+   */
   const handleDeleteClick = (id) => {
+    // Set the ID of the item to be deleted
     setDeleteItemId(id);
+
+    // Open the delete confirmation dialog
     setOpenDeleteDialog(true);
 
+    // Close any open menu, as the delete action is initiated
     handleCloseMenu();
   };
 
+  /**
+   * Handles the confirmation of the delete action.
+   * This asynchronous function sends a DELETE request to the server to remove the specified item
+   * identified by the deleteItemId state. Upon successful deletion, it closes the delete confirmation
+   * dialog and fetches the updated data. It handles any errors that occur during the request and ensures
+   * that the menu anchor element is reset after the operation, regardless of the outcome.
+   */
   const handleConfirmDelete = async () => {
     try {
+      // Send a DELETE request to the server for the specified item
       await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/words/${deleteItemId}`,
         { withCredentials: true }
       );
+
+      // Close the delete confirmation dialog
       setOpenDeleteDialog(false);
+
+      // Fetch updated data to reflect the changes
       fetchData();
     } catch (error) {
+      // Log any errors that occur during the delete operation
       console.error("Error deleting row:", error);
     } finally {
+      // Reset the menu anchor element state
       setAnchorEl(null);
     }
   };
 
+  /**
+   * Handles the cancellation of the delete action.
+   * This function resets the deleteItemId state to null and closes the delete confirmation dialog,
+   * effectively cancelling the deletion process.
+   */
   const handleCancelDelete = () => {
+    // Reset the ID of the item to be deleted
     setDeleteItemId(null);
+
+    // Close the delete confirmation dialog
     setOpenDeleteDialog(false);
   };
 
+  /**
+   * Handles the action to open the dialog for adding a new category.
+   * This function sets the state to open the dialog where the user can input and submit a new category.
+   */
   const handleAddNewCategory = () => {
+    // Open the dialog for adding a new category
     setAddCategoryDialogOpen(true);
   };
 
+  /**
+   * Handles changes in the input field for adding a new category.
+   * This function updates the newCategory state with the value from the input field,
+   * ensuring that the state always reflects the current input.
+   *
+   * @param {Object} e - The event object from the input field.
+   */
   const handleNewCategoryInputChange = (e) => {
+    // Update the newCategory state with the current input
     setNewCategory(e.target.value);
   };
 
+  /**
+   * Handles the confirmation action for adding a new category.
+   * This asynchronous function sends a POST request to the server to create a new category
+   * using the value stored in the `newCategory` state. After successfully adding the new category,
+   * it fetches the updated list of categories and closes the add category dialog.
+   * Any errors encountered during the request are logged to the console.
+   */
   const handleConfirmNewCategory = async () => {
     try {
+      // Log the attempt to add a new category
       console.log("Adding new category...", newCategory);
 
+      // Send a POST request to the server to add the new category
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/categories/`,
         { category: newCategory },
         { withCredentials: true }
       );
 
+      // Log the response from the server
       console.log("New word pair added:", response.data);
 
+      // Fetch the updated list of categories and close the dialog
       fetchCategories();
       setAddCategoryDialogOpen(false);
     } catch (error) {
+      // Log any errors encountered during the request
       console.error("Error adding new category:", error);
     }
   };
 
+  /**
+   * Handles the cancellation of the new category addition process.
+   * This function closes the add category dialog and resets any error messages.
+   * It's typically used when the user decides not to proceed with adding a new category.
+   */
   const handleCancelNewCategory = () => {
+    // Close the dialog for adding a new category
     setAddCategoryDialogOpen(false);
+
+    // Reset any error messages
     setError("");
   };
 
+  // Conditional rendering based on loading state
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
   return (
+    // JSX for table and dialog components
+
     <div>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Button
