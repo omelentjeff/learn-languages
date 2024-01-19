@@ -70,7 +70,30 @@ const server = app
  * This function is triggered on receiving SIGTERM or SIGINT signals.
  */
 const gracefulShutdown = () => {
-  // Logic for shutting down the server and MySQL connection
+  console.log("Starting graceful shutdown...");
+  // Close the server
+  if (server) {
+    console.log("Server was opened, so we can close it...");
+    server.close((err) => {
+      if (err) {
+        console.log("SERVER: Error closing Express server: ", err);
+      } else {
+        console.log("SERVER: stopped.");
+      }
+
+      console.log("MYSQL: Starting graceful shutdown...");
+      connection.end((err) => {
+        if (err) {
+          console.log("MYSQL: Error closing MYSQL connection: ", err);
+        } else {
+          console.log("MYSQL: Connection closed.");
+        }
+
+        console.log("Application: Shutdown complete");
+        process.exit(0);
+      });
+    });
+  }
 };
 
 // Listening for shutdown signals
