@@ -5,7 +5,7 @@ import LoadingSpinner from "./LoadingSpinner";
 
 const ExercisePage = () => {
   const { state } = useLocation();
-  const { languageName, selectedCategories } = state;
+  const { languageName, selectedCategories, languageChoice } = state;
   const [exercises, setExercises] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState([]);
@@ -42,14 +42,22 @@ const ExercisePage = () => {
   const handleAnswerSubmit = (answer, form) => {
     const currentExercise = exercises[currentQuestionIndex];
 
-    const isCorrect =
-      answer.toLowerCase() === currentExercise.finnish_word.toLowerCase();
+    const correctAnswer =
+      languageChoice === languageName
+        ? currentExercise.foreign_word.toLowerCase()
+        : currentExercise.finnish_word.toLowerCase();
+
+    const isCorrect = answer.toLowerCase() === correctAnswer;
 
     setUserAnswers((prevAnswers) => [
       ...prevAnswers,
       {
         question: currentExercise.foreign_word,
-        answer,
+        correctAnswer:
+          languageChoice === languageName
+            ? currentExercise.foreign_word
+            : currentExercise.finnish_word,
+        userAnswer: answer,
         isCorrect,
       },
     ]);
@@ -72,13 +80,18 @@ const ExercisePage = () => {
 
   if (!exerciseCompleted && currentQuestionIndex < exercises.length) {
     const currentExercise = exercises[currentQuestionIndex];
+    const question =
+      languageChoice === languageName
+        ? currentExercise.finnish_word
+        : currentExercise.foreign_word;
+
     return (
       <div style={{ textAlign: "center", padding: "20px" }}>
         <div style={{ maxWidth: "500px", margin: "auto" }}>
           <h2 style={{ marginBottom: "20px" }}>
             Question {currentQuestionIndex + 1}
           </h2>
-          <p style={{ fontSize: "1.2em" }}>{currentExercise.foreign_word}</p>
+          <p style={{ fontSize: "1.2em" }}>{question}</p>
 
           <form
             onSubmit={(e) => {
