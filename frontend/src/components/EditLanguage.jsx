@@ -346,7 +346,6 @@ const CustomTable = () => {
   const handleInputChangeAdd = (e) => {
     const { name, value } = e.target;
 
-    // If the input change is for the 'category_id', find the corresponding category and update
     if (name === "category_id") {
       const selectedCategory = categories.find(
         (category) => category.category_id === value
@@ -359,7 +358,6 @@ const CustomTable = () => {
         });
       }
     } else {
-      // For other inputs, directly update the corresponding field in the state
       setNewExercise({
         ...newExercise,
         [name]: value,
@@ -381,7 +379,6 @@ const CustomTable = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // If the input change is for the 'category_id', find the corresponding category and update
     if (name === "category_id") {
       const selectedCategory = categories.find(
         (category) => category.category_id === value
@@ -394,7 +391,6 @@ const CustomTable = () => {
         }));
       }
     } else {
-      // For other inputs, directly update the corresponding field in the state, along with edited field details
       setEditedData((prevData) => ({
         ...prevData,
         [name]: value,
@@ -431,22 +427,15 @@ const CustomTable = () => {
    */
   const handleConfirmDelete = async () => {
     try {
-      // Send a DELETE request to the server for the specified item
       await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/words/${deleteItemId}`,
         { withCredentials: true }
       );
-
-      // Close the delete confirmation dialog
       setOpenDeleteDialog(false);
-
-      // Fetch updated data to reflect the changes
       fetchData();
     } catch (error) {
-      // Log any errors that occur during the delete operation
       console.error("Error deleting row:", error);
     } finally {
-      // Reset the menu anchor element state
       setAnchorEl(null);
     }
   };
@@ -494,24 +483,19 @@ const CustomTable = () => {
    */
   const handleConfirmNewCategory = async () => {
     try {
-      // Log the attempt to add a new category
       console.log("Adding new category...", newCategory);
 
-      // Send a POST request to the server to add the new category
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/categories/`,
         { category: newCategory },
         { withCredentials: true }
       );
 
-      // Log the response from the server
       console.log("New word pair added:", response.data);
 
-      // Fetch the updated list of categories and close the dialog
       fetchCategories();
       setAddCategoryDialogOpen(false);
     } catch (error) {
-      // Log any errors encountered during the request
       console.error("Error adding new category:", error);
     }
   };
@@ -522,10 +506,7 @@ const CustomTable = () => {
    * It's typically used when the user decides not to proceed with adding a new category.
    */
   const handleCancelNewCategory = () => {
-    // Close the dialog for adding a new category
     setAddCategoryDialogOpen(false);
-
-    // Reset any error messages
     setError("");
   };
 

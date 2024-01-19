@@ -81,6 +81,7 @@ const CategorySelector = () => {
    * Navigates to the exercise page with the selected language and categories.
    */
   const handleStartClick = () => {
+    console.log("Selected Categories:", selectedCategories);
     navigate(`/play/${languageName}`, {
       state: {
         languageName: languageName,
@@ -100,9 +101,15 @@ const CategorySelector = () => {
         { withCredentials: true }
       );
 
-      // Handling based on the response status
+      if (response.status === 200) {
+        console.log("Language exists");
+      }
     } catch (err) {
-      // Error handling
+      if (err.response && err.response.status === 404) {
+        navigate("*");
+      } else {
+        console.log("Error checking language existence", err);
+      }
     } finally {
       setIsLoading(false);
     }

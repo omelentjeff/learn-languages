@@ -99,7 +99,23 @@ export default function CheckboxList({ onSelectCategories }) {
    * @param {number} value - The ID of the category associated with the checkbox.
    */
   const handleToggle = (value) => () => {
-    // Checkbox toggle logic
+    setCheckboxStates((prev) => ({ ...prev, [value]: !prev[value] }));
+
+    if (isFirstInteraction) {
+      setChecked([value]);
+      setIsFirstInteraction(false);
+    } else {
+      const currentIndex = checked.indexOf(value);
+      let newChecked = [...checked];
+      if (currentIndex === -1) {
+        newChecked.push(value);
+      } else {
+        newChecked = newChecked.filter((id) => id !== value);
+      }
+      setChecked(newChecked);
+    }
+
+    onSelectCategories(isFirstInteraction ? [value] : checked);
   };
 
   /**

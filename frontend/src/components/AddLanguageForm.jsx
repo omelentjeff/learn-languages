@@ -45,6 +45,7 @@ const AddLanguageForm = ({ open, handleClose, addLanguageToState }) => {
       );
 
       const newLanguage = { ...response.data, wordCount: 0 };
+
       console.log("from addLanguage:", response.data);
 
       addLanguageToState(newLanguage);
@@ -70,6 +71,7 @@ const AddLanguageForm = ({ open, handleClose, addLanguageToState }) => {
       <DialogTitle>Add New Language</DialogTitle>
       <DialogContent>
         <DialogContentText>Enter language name:</DialogContentText>
+
         <input
           type="text"
           value={languageName}
