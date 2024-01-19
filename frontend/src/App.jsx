@@ -118,8 +118,8 @@ function App() {
         justifyContent="flex-end"
         style={{
           position: "fixed",
-          bottom: 16,
-          right: 16,
+          bottom: 10,
+          right: 10,
           maxWidth: "fit-content",
         }}
       >
