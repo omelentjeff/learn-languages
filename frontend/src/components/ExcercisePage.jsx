@@ -89,11 +89,11 @@ const ExercisePage = () => {
 
     return (
       <div style={{ textAlign: "center", padding: "20px" }}>
-        <div style={{ maxWidth: "500px", margin: "auto" }}>
+        <div style={{ maxWidth: "90%", margin: "auto" }}>
           <h2 style={{ marginBottom: "20px" }}>
             Question {currentQuestionIndex + 1}
           </h2>
-          <p style={{ fontSize: "1.2em" }}>{question}</p>
+          <p style={{ fontSize: "1.3em" }}>{question}</p>
 
           <form
             onSubmit={(e) => {
@@ -111,11 +111,11 @@ const ExercisePage = () => {
                   width: "100%",
                   padding: "12px 20px",
                   margin: "8px 0",
-                  display: "inline-block",
+                  display: "block",
                   border: "1px solid #ccc",
                   borderRadius: "4px",
                   boxSizing: "border-box",
-                  fontSize: "1em",
+                  fontSize: "1.1em",
                 }}
               />
             </div>
@@ -141,8 +141,8 @@ const ExercisePage = () => {
   }
 
   return (
-    <>
-      <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "left", padding: "20px" }}>
+      <div style={{ maxWidth: "90%", margin: "auto" }}>
         <h2>Results:</h2>
         {exercises.length > 0 ? (
           <>
@@ -151,38 +151,35 @@ const ExercisePage = () => {
                 padding: 0,
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
+                alignItems: "flex-start",
               }}
             >
               {userAnswers.map((item, index) => (
                 <li
                   key={index}
-                  style={{ listStyle: "none", marginBottom: "10px" }}
+                  style={{
+                    listStyle: "none",
+                    marginBottom: "10px",
+                    fontSize: "1.1em",
+                    display: "flex",
+                    alignItems: "center", // Vertically align text and icons
+                  }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <span>
-                      <strong>{index + 1}.</strong> {item.question},
-                      <strong> Your Answer:</strong> {item.userAnswer},
-                      {!item.isCorrect && (
-                        <>
-                          <strong> Correct Answer:</strong> {item.correctAnswer}
-                          ,
-                        </>
-                      )}
-                    </span>
-                    <span style={{ marginLeft: "10px" }}>
-                      {item.isCorrect ? (
-                        <CheckIcon sx={{ color: "green" }} />
-                      ) : (
-                        <CloseIcon sx={{ color: "red" }} />
-                      )}
-                    </span>
+                  <div style={{ flex: 1 }}>
+                    <strong>{index + 1}.</strong> {item.question},
+                    <strong> Your Answer:</strong> {item.userAnswer},
+                    {!item.isCorrect && (
+                      <>
+                        <strong> Correct Answer:</strong> {item.correctAnswer},
+                      </>
+                    )}
+                  </div>
+                  <div>
+                    {item.isCorrect ? (
+                      <CheckIcon sx={{ color: "green" }} />
+                    ) : (
+                      <CloseIcon sx={{ color: "red" }} />
+                    )}
                   </div>
                 </li>
               ))}
@@ -200,20 +197,18 @@ const ExercisePage = () => {
       <div
         style={{
           marginTop: "20px",
-          alignItems: "center",
-          justifyContent: "center",
           display: "flex",
-          gap: "10px",
+          justifyContent: "center",
         }}
       >
         <button
           onClick={handleBackHome}
           style={{
-            maxWidth: "100%",
+            width: "45%",
             backgroundColor: "blue",
             color: "white",
             padding: "14px 20px",
-            margin: "8px 0",
+            margin: "8px 5px",
             border: "none",
             borderRadius: "4px",
             cursor: "pointer",
@@ -224,11 +219,11 @@ const ExercisePage = () => {
         <button
           onClick={handlePlayAgain}
           style={{
-            maxWidth: "100%",
+            width: "45%",
             backgroundColor: "#4CAF50",
             color: "white",
             padding: "14px 20px",
-            margin: "8px 0",
+            margin: "8px 5px",
             border: "none",
             borderRadius: "4px",
             cursor: "pointer",
@@ -237,7 +232,7 @@ const ExercisePage = () => {
           Play Again
         </button>
       </div>
-    </>
+    </div>
   );
 };
 
