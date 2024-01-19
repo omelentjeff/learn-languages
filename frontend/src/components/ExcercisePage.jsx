@@ -101,7 +101,12 @@ const ExercisePage = () => {
               const userAnswer = e.target.answer.value;
               handleAnswerSubmit(userAnswer, e.target);
             }}
-            style={{ marginTop: "20px" }}
+            style={{
+              marginTop: "20px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
             <div style={{ marginBottom: "15px" }}>
               <input
@@ -109,23 +114,23 @@ const ExercisePage = () => {
                 name="answer"
                 style={{
                   width: "100%",
-                  padding: "12px 20px",
+                  padding: "8px 15px",
                   margin: "8px 0",
                   display: "block",
                   border: "1px solid #ccc",
                   borderRadius: "4px",
                   boxSizing: "border-box",
-                  fontSize: "1.1em",
+                  fontSize: "1em",
                 }}
               />
             </div>
             <button
               type="submit"
               style={{
-                width: "100%",
+                width: "auto",
                 backgroundColor: "#4CAF50",
                 color: "white",
-                padding: "14px 20px",
+                padding: "10px 15px",
                 margin: "8px 0",
                 border: "none",
                 borderRadius: "4px",
@@ -162,7 +167,7 @@ const ExercisePage = () => {
                     marginBottom: "10px",
                     fontSize: "1.1em",
                     display: "flex",
-                    alignItems: "center", // Vertically align text and icons
+                    alignItems: "center",
                   }}
                 >
                   <div style={{ flex: 1 }}>
@@ -204,10 +209,10 @@ const ExercisePage = () => {
         <button
           onClick={handleBackHome}
           style={{
-            width: "45%",
+            width: "auto",
             backgroundColor: "blue",
             color: "white",
-            padding: "14px 20px",
+            padding: "10px 15px",
             margin: "8px 5px",
             border: "none",
             borderRadius: "4px",
@@ -219,10 +224,10 @@ const ExercisePage = () => {
         <button
           onClick={handlePlayAgain}
           style={{
-            width: "45%",
+            width: "auto",
             backgroundColor: "#4CAF50",
             color: "white",
-            padding: "14px 20px",
+            padding: "10px 15px",
             margin: "8px 5px",
             border: "none",
             borderRadius: "4px",
