@@ -67,18 +67,20 @@ const CategorySelector = () => {
       alignItems="center"
       minHeight="100vh"
       spacing={2}
+      xs={{ margin: 0, padding: 0 }}
     >
       <Grid item xs={12} sm={8} md={6} lg={4}>
-        <Typography variant="h6" align="center" gutterBottom>
+        <Typography sx={{ mb: 10 }} variant="h6" align="center" gutterBottom>
           Choose the categories you want to practice (Leave empty if you want to
           practice all)
         </Typography>
         <CheckboxList onSelectCategories={handleSelectCategories} />
+        {/* Button is now inside the same Grid item */}
         <Button
           variant="contained"
           color="primary"
           onClick={handleStartClick}
-          fullWidth
+          sx={{ maxWidth: "80%", mt: 6, display: "block", marginX: "auto" }} // Center the button and reduce top margin
         >
           START
         </Button>
