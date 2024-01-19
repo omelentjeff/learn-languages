@@ -49,8 +49,6 @@ export default function Layout({ children }) {
       } catch (error) {
         console.error("Error or unauthorized", error);
         navigate("/");
-      } finally {
-        // setIsChecking(false);
       }
     };
 
