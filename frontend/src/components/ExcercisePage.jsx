@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 
 const ExercisePage = () => {
   const { state } = useLocation();
@@ -144,13 +146,44 @@ const ExercisePage = () => {
         <h2>Results:</h2>
         {exercises.length > 0 ? (
           <>
-            <ul>
+            <ul
+              style={{
+                padding: 0,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               {userAnswers.map((item, index) => (
-                <li key={index} style={{ listStyle: "none" }}>
-                  <strong>{index}.</strong> {item.question},{" "}
-                  <strong>Your Answer:</strong> {item.answer},{" "}
-                  <strong>Your Answer:</strong> {item.answer},{" "}
-                  <strong>{item.isCorrect ? "Correct" : "Wrong"}</strong>
+                <li
+                  key={index}
+                  style={{ listStyle: "none", marginBottom: "10px" }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <span>
+                      <strong>{index + 1}.</strong> {item.question},
+                      <strong> Your Answer:</strong> {item.userAnswer},
+                      {!item.isCorrect && (
+                        <>
+                          <strong> Correct Answer:</strong> {item.correctAnswer}
+                          ,
+                        </>
+                      )}
+                    </span>
+                    <span style={{ marginLeft: "10px" }}>
+                      {item.isCorrect ? (
+                        <CheckIcon sx={{ color: "green" }} />
+                      ) : (
+                        <CloseIcon sx={{ color: "red" }} />
+                      )}
+                    </span>
+                  </div>
                 </li>
               ))}
             </ul>
