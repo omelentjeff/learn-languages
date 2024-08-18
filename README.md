@@ -20,9 +20,6 @@ Node.js, Express, React.js, Docker, MySQL, Material.ui
 - Responsive UI
 - UI made with material.ui
 
-## Screencast
-https://youtu.be/1D6-AZHRRi8&t=000s
-
  
 ### Screenshots
 
