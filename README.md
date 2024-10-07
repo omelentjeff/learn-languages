@@ -97,17 +97,7 @@ Node.js, Express, React.js, Docker, MySQL, Material.ui
 
 ## Installation
 
-### Cloud
-https://learn-languages-9x4r.onrender.com
-
-### Locally
-
-1. Clone this repository by clicking the blue 'code' button and choose HTTPS, copy url
-2. Open your terminal and go to desired folder and enter git clone "copied url"
-3. In your terminal, go to root directory
-4. When in root directory, install dependencies: npm run install-all
-5. Start the app while in root directory: npm run start
-6. Open your browser in localhost provided by the terminal
+<span>NOTE! THE PROJECT'S DATABASE IS NO LONGER SUPPORTED SO THE PROJECT ISN'T LIVE ANYMORE</span>
 
 
  © [Otto Melentjeff]()
